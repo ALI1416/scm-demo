@@ -8,14 +8,28 @@
   <WorkspaceName>WorkSpace</WorkspaceName>
 
   <project>
-    <PathAndName>.\LED\点亮1个LED\点亮1个LED.uvproj</PathAndName>
+    <PathAndName>.\001LED\001点亮\点亮.uvproj</PathAndName>
     <NodeIsActive>1</NodeIsActive>
     <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
-    <PathAndName>.\LED\LED闪烁\LED闪烁.uvproj</PathAndName>
+    <PathAndName>.\001LED\002闪烁\闪烁.uvproj</PathAndName>
     <NodeIsExpanded>1</NodeIsExpanded>
+  </project>
+
+  <project>
+    <PathAndName>.\001LED\003流水灯\流水灯.uvproj</PathAndName>
+    <NodeIsExpanded>1</NodeIsExpanded>
+  </project>
+
+  <project>
+    <PathAndName>.\002独立按键\001控制LED亮灭\控制LED亮灭.uvproj</PathAndName>
+    <NodeIsExpanded>1</NodeIsExpanded>
+  </project>
+
+  <project>
+    <PathAndName>.\002独立按键\002控制LED状态\控制LED状态.uvproj</PathAndName>
   </project>
 
 </ProjectWorkspace>
