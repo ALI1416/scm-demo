@@ -1,6 +1,6 @@
 #include <REGX52.H>
 
-/*
+/**
 C51数据类型
 类型            位数  范围
 int             16    -32768~32767
@@ -15,7 +15,7 @@ char            8     -128~127
 unsigned char   8     0~255
 */
 
-/*
+/**
 通过STC-ISP延时生成测试
 延时1us：单独调用`_nop_();`函数
 延时4us：声明空方法`void Delay4us(){}`
@@ -67,23 +67,29 @@ void Delay532us()
 }
 */
 
-// 延时n*10us
+/**
+延时n*10us
+*/
 void delay10us(unsigned int n)
 {
   while (n--)
     ;
 }
 
-// 延时n*ms
+/**
+延时n*ms
+*/
 void delayMs(unsigned int n)
 {
   unsigned int i = 0, j = 0;
   for (i = 0; i < n; i++)
-    for (j = 0; j < 123; j++)
+    for (j = 0; j < 111; j++)
       ;
 }
 
-// 延时n*s
+/**
+延时n*s
+*/
 void delayM(unsigned int n)
 {
   unsigned int i = 0, j = 0;

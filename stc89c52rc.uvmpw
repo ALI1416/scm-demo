@@ -10,26 +10,43 @@
   <project>
     <PathAndName>.\001LED\001点亮\点亮.uvproj</PathAndName>
     <NodeIsActive>1</NodeIsActive>
-    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
     <PathAndName>.\001LED\002闪烁\闪烁.uvproj</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
     <PathAndName>.\001LED\003流水灯\流水灯.uvproj</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
     <PathAndName>.\002独立按键\001控制LED亮灭\控制LED亮灭.uvproj</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
     <PathAndName>.\002独立按键\002控制LED状态\控制LED状态.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\002独立按键\003控制LED显示二进制\控制LED显示二进制.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\002独立按键\004控制LED移位\控制LED移位.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\003数码管\001静态显示\静态显示.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\003数码管\002动态显示\动态显示.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\004模块化编程\001头文件封装\头文件封装.uvproj</PathAndName>
+    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
 </ProjectWorkspace>
