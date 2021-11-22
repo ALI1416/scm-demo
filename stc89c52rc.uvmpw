@@ -46,7 +46,18 @@
 
   <project>
     <PathAndName>.\004模块化编程\001头文件封装\头文件封装.uvproj</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
+  </project>
+
+  <project>
+    <PathAndName>.\004模块化编程\002LCD1602\LCD1602.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\005矩阵键盘\001显示编号\显示编号.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\005矩阵键盘\002电子密码\电子密码.uvproj</PathAndName>
   </project>
 
 </ProjectWorkspace>
