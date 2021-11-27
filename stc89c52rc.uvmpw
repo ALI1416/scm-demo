@@ -60,4 +60,20 @@
     <PathAndName>.\005矩阵键盘\002电子密码\电子密码.uvproj</PathAndName>
   </project>
 
+  <project>
+    <PathAndName>.\006定时器\001流水灯\流水灯.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\006定时器\002时钟\时钟.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\007串口通信\001电脑接收\电脑接收.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\007串口通信\002电脑发送\电脑发送.uvproj</PathAndName>
+  </project>
+
 </ProjectWorkspace>
