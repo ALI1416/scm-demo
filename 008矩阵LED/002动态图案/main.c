@@ -11,7 +11,9 @@
 // 复制下方数组即可
 void main()
 {
-  unsigned char anim[] = {
+  // code关键字代表储存到Flash闪存中，不占用内存，但是数据不能修改
+  // 主要存储占用空间大，并且不会修改的数据
+  unsigned char code anim[] = {
       // 空白
       0x00,
       0x00,
