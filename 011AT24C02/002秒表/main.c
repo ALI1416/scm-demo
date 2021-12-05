@@ -11,7 +11,7 @@ unsigned char RunFlag;
 
 void main()
 {
-  Timer0Init();
+  Timer0_Init();
   while (1)
   {
     KeyNum = Key();
@@ -81,7 +81,7 @@ void Sec_Loop(void)
 void Timer0_Routine() interrupt 1
 {
   static unsigned int T0Count1, T0Count2, T0Count3;
-  TL0 = 0x18; //设置定时初值
+  TL0 = 0x66; //设置定时初值
   TH0 = 0xFC; //设置定时初值
   T0Count1++;
   if (T0Count1 >= 20)
