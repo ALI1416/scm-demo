@@ -26,15 +26,15 @@ void main()
       } //设置比较值，改变PWM占空比
       if (Speed == 1)
       {
-        Compare = 25;
+        Compare = 40;
       }
       if (Speed == 2)
       {
-        Compare = 50;
+        Compare = 60;
       }
       if (Speed == 3)
       {
-        Compare = 75;
+        Compare = 80;
       }
       if (Speed == 4)
       {
