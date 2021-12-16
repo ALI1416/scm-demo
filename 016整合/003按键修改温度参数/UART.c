@@ -27,7 +27,7 @@ void UartInit() //4800bps@11.0592MHz
 }
 
 /**
-发送1个字符
+* 发送1个字符
 */
 void UartSendByte(unsigned char byte)
 {
@@ -38,6 +38,66 @@ void UartSendByte(unsigned char byte)
     ;
   // 复位
   TI = 0;
+}
+
+/**
+* 发送1个字符串(字符串结尾会自动加\0)
+* 0x00(即\0)作为字符串结束符，如果需要发送0x00，那么发送2个0x00
+*/
+void UartSendString(unsigned char *str)
+{
+  unsigned char i = 0;
+  while (1)
+  {
+    if (str[i] == 0)
+    {
+      if (str[++i] == 0)
+      {
+        i++;
+        UartSendByte(0);
+      }
+      else
+      {
+        break;
+      }
+    }
+    else
+    {
+      UartSendByte(str[i++]);
+    }
+  }
+}
+
+/**
+* 发送字符数组，并指定只发送前几位
+*/
+void UartSendByteArray(unsigned char bytes[], unsigned char len)
+{
+  unsigned char i;
+  for (i = 0; i < len; i++)
+  {
+    UartSendByte(bytes[i]);
+  }
+}
+
+/**
+ * 发送int，高位在前
+ */
+void UartSendInt(unsigned int i)
+{
+  UartSendByte(i >> 8);
+  UartSendByte(i & 0x00FF);
+}
+
+/**
+ * 发送long，高位在前
+ */
+void UartSendLong(unsigned long i)
+{
+  UartSendByte(i >> 24);
+  UartSendByte((i & 0x00FF0000) >> 16);
+  UartSendByte((i & 0x0000FF00) >> 8);
+  UartSendByte(i & 0x000000FF);
 }
 
 // /**
