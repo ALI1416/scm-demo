@@ -1,7 +1,7 @@
 #include <REGX52.H>
 
 /**
-* 定时器1初始化
+* 定时器0初始化
 * 在STC-ISP中可以生成
 * 右上角功能找到`定时器计算器`，
 * 系统频率选择`11.0592MHz`，
@@ -38,8 +38,8 @@ void Timer0_Init()
 //   // 静态，防止被销毁
 //   static unsigned int T0Count;
 //   // 复位
-//   TH0 = 0xFC;
 //   TL0 = 0x66;
+//   TH0 = 0xFC;
 //   // 1s
 //   if ((++T0Count) >= 1000)
 //   {
