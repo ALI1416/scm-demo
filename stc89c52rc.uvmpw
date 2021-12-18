@@ -69,11 +69,95 @@
   </project>
 
   <project>
+    <PathAndName>.\006定时器\003两个定时器\两个定时器.uvproj</PathAndName>
+  </project>
+
+  <project>
     <PathAndName>.\007串口通信\001电脑接收\电脑接收.uvproj</PathAndName>
   </project>
 
   <project>
     <PathAndName>.\007串口通信\002电脑发送\电脑发送.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\008矩阵LED\001静态图案\静态图案.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\008矩阵LED\002动态图案\动态图案.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\009时钟\001显示\显示.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\009时钟\002可调\可调.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\010蜂鸣器\001按键\按键.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\010蜂鸣器\002音乐\音乐.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\011AT24C02\001存储数据\存储数据.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\011AT24C02\002秒表\秒表.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\012DS18B20\001温度读取\温度读取.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\012DS18B20\002温度报警\温度报警.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\013PWM\001呼吸灯\呼吸灯.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\013PWM\002直流电机调速\直流电机调速.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\014AD与DA转换\001AD模数转换\AD模数转换.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\014AD与DA转换\002DA数模转换\DA数模转换.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\015红外\001遥控\遥控.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\015红外\002遥控电机\遥控电机.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\016整合\001串口发送接收字符串\串口发送接收字符串.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\016整合\002发送温度\发送温度.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\016整合\003按键修改温度参数\按键修改温度参数.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\016整合\004数据交互\数据交互.uvproj</PathAndName>
   </project>
 
 </ProjectWorkspace>

@@ -43,9 +43,11 @@ long Temp;
 // 温度整数部分(char)(Temp / 10000)
 char TempInt;
 // 高温报警
-char TEMP_HIGH = 28;
+char TEMP_HIGH = 30;
 // 低温报警
-char TEMP_LOW = 24;
+char TEMP_LOW = 20;
+// 温度报警状态：0正常；1温度过高；2温度过低
+unsigned char TEMP_ALARM_STATUS;
 
 // 温度设置刷新状态：0不可刷新；1可刷新
 unsigned char TEMP_SET_REFRESH_STATUS = 0;
@@ -94,14 +96,97 @@ void main()
   delayMs(500);
   while (1)
   {
+    // 数据交互格式：
+    // 电脑-->单片机：0x01....
+    //  设置：0x0101....
+    //    ■设置温度设置：0x010101....
+    //      后面4位(4x8bit)分别为：H高温报警 L低温报警 C串口发送时间间隔 F温度读取时间间隔
+    //  读取：0x0102....
+    //    ■读取温度：0x010201
+    //    ■读取温度设置：0x010202
+    // 单片机-->电脑：0x02....
+    //  回复电脑：0x0201....
+    //    ■温度：0x020101....
+    //      后面4位(4x8bit)为温度x10000
+    //    ■温度设置：0x020102....
+    //      后面4位(4x8bit)分别为：H高温报警 L低温报警 C串口发送时间间隔 F温度读取时间间隔
+    //  自动发送：0x0202....
+    //    ■发送温度：0x020201....
+    //      后面4位(4x8bit)为温度x10000
+    //  报警：0x0203....
+    //    温度异常报警：0x020301....
+    //      ■温度过高报警：0x02030101....
+    //        后面4位(4x8bit)为温度x10000
+    //      ■温度过低报警：0x02030102....
+    //        后面4位(4x8bit)为温度x10000
     /* 数据接收完成 */
     if (UART_RECEIVE_STATUS == 3)
     {
-      // 再把数据发送给电脑
-      UartSendByteArray(UART_RECEIVE_DATA, UART_RECEIVE_INDEX);
+      if (UART_RECEIVE_DATA[0] == 0x01)
+      {
+        if (UART_RECEIVE_DATA[1] == 0x01)
+        {
+          // 0x010101....设置温度设置
+          if (UART_RECEIVE_DATA[2] == 0x01)
+          {
+            // 读取数据
+            THigh = UART_RECEIVE_DATA[3];
+            TLow = UART_RECEIVE_DATA[4];
+            TSend = UART_RECEIVE_DATA[5];
+            TConvert = UART_RECEIVE_DATA[6];
+            // 数据正确
+            if (THigh <= TEMP_MAX && TLow >= TEMP_MIN && THigh > TLow                 //
+                && TSend > TEMP_SEND_MIN - 1 && TSend < TEMP_SEND_MAX + 1             //
+                && TConvert > TEMP_CONVERT_MIN - 1 && TConvert < TEMP_CONVERT_MAX + 1 //
+                && TSend >= TConvert)
+            {
+              TEMP_HIGH = THigh;
+              TEMP_LOW = TLow;
+              TEMP_SEND_TIME = TSend;
+              TEMP_CONVERT_TIME = TConvert;
+              // 写入数据到存储器
+              AT24C02_WriteByte(0, TEMP_HIGH);
+              delayMs(5);
+              AT24C02_WriteByte(1, TEMP_LOW);
+              delayMs(5);
+              AT24C02_WriteByte(2, TEMP_SEND_TIME);
+              delayMs(5);
+              AT24C02_WriteByte(3, TEMP_CONVERT_TIME);
+            }
+          }
+        }
+        else if (UART_RECEIVE_DATA[1] == 0x02)
+        {
+          // 0x010201读取温度
+          if (UART_RECEIVE_DATA[2] == 0x01)
+          {
+            // 0x020101回复电脑温度
+            UartSendString("\x02\x01\x01");
+            UartSendLong(Temp);
+          }
+          // 0x010202读取温度设置
+          else if (UART_RECEIVE_DATA[2] == 0x02)
+          {
+            // 0x020102回复电脑温度设置
+            UartSendString("\x02\x01\x02");
+            UartSendByte(TEMP_HIGH);
+            UartSendByte(TEMP_LOW);
+            UartSendByte(TEMP_SEND_TIME);
+            UartSendByte(TEMP_CONVERT_TIME);
+          }
+        }
+      }
       // 重置状态和下标
       UART_RECEIVE_INDEX = 0;
       UART_RECEIVE_STATUS = 0;
+    }
+    /* 温度串口发送时间到 */
+    if (TEMP_SEND_STATUS == 1)
+    {
+      // 0x020201自动发送温度
+      UartSendString("\x02\x02\x01");
+      UartSendLong(Temp);
+      TEMP_SEND_STATUS = 0;
     }
     /* 温度转换时间到 */
     if (TEMP_CONVERT_STATUS == 1)
@@ -117,22 +202,31 @@ void main()
       if (TempInt >= TEMP_HIGH)
       {
         LCD_ShowChar(2, 16, 'H');
+        if (TEMP_ALARM_STATUS != 1)
+        {
+          // 0x02030101温度过高报警
+          UartSendString("\x02\x03\x01\x01");
+          UartSendLong(Temp);
+          TEMP_ALARM_STATUS = 1;
+        }
       }
       else if (TempInt < TEMP_LOW)
       {
         LCD_ShowChar(2, 16, 'L');
+        if (TEMP_ALARM_STATUS != 2)
+        {
+          // 0x02030102温度过低报警
+          UartSendString("\x02\x03\x01\x02");
+          UartSendLong(Temp);
+          TEMP_ALARM_STATUS = 2;
+        }
       }
       else
       {
+        TEMP_ALARM_STATUS = 0;
         LCD_ShowChar(2, 16, ' ');
       }
       TEMP_CONVERT_STATUS = 0;
-    }
-    /* 温度串口发送时间到 */
-    if (TEMP_SEND_STATUS == 1)
-    {
-      UartSendLong(Temp);
-      TEMP_SEND_STATUS = 0;
     }
     /* 温度设置刷新时间到 */
     if (TEMP_SET_MODE == 0 && TEMP_SET_REFRESH_STATUS == 1)
@@ -149,6 +243,7 @@ void main()
     KeyNum = Key();
     if (KeyNum != 0)
     {
+      LCD_ShowNum(2, 15, KeyNum, 1);
       // 按键1：温度设置调节按键序号：1切换调节；2数值+1；3数值-1；4保存调节
       if (KeyNum == 1)
       {
