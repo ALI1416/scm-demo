@@ -37,7 +37,7 @@ unsigned char TEMP_SEND_TIME = 10;
 // 温度转换状态：0不可转换；1可转换
 unsigned char TEMP_CONVERT_STATUS = 1;
 // 温度串口发送状态：0不可发送；1可发送
-unsigned char TEMP_SEND_STATUS = 1;
+unsigned char TEMP_SEND_STATUS = 0;
 // 温度*10000
 long Temp;
 // 温度整数部分(char)(Temp / 10000)
@@ -114,11 +114,10 @@ void main()
     //    ■发送温度：0x020201....
     //      后面4位(4x8bit)为温度x10000
     //  报警：0x0203....
-    //    温度异常报警：0x020301....
-    //      ■温度过高报警：0x02030101....
-    //        后面4位(4x8bit)为温度x10000
-    //      ■温度过低报警：0x02030102....
-    //        后面4位(4x8bit)为温度x10000
+    //    ■温度过高报警：0x020301....
+    //      后面4位(4x8bit)为温度x10000
+    //    ■温度过低报警：0x020302....
+    //      后面4位(4x8bit)为温度x10000
     /* 数据接收完成 */
     if (UART_RECEIVE_STATUS == 3)
     {
@@ -204,8 +203,8 @@ void main()
         LCD_ShowChar(2, 16, 'H');
         if (TEMP_ALARM_STATUS != 1)
         {
-          // 0x02030101温度过高报警
-          UartSendString("\x02\x03\x01\x01");
+          // 0x020301温度过高报警
+          UartSendString("\x02\x03\x01");
           UartSendLong(Temp);
           TEMP_ALARM_STATUS = 1;
         }
@@ -215,8 +214,8 @@ void main()
         LCD_ShowChar(2, 16, 'L');
         if (TEMP_ALARM_STATUS != 2)
         {
-          // 0x02030102温度过低报警
-          UartSendString("\x02\x03\x01\x02");
+          // 0x020302温度过低报警
+          UartSendString("\x02\x03\x02");
           UartSendLong(Temp);
           TEMP_ALARM_STATUS = 2;
         }
@@ -243,7 +242,6 @@ void main()
     KeyNum = Key();
     if (KeyNum != 0)
     {
-      LCD_ShowNum(2, 15, KeyNum, 1);
       // 按键1：温度设置调节按键序号：1切换调节；2数值+1；3数值-1；4保存调节
       if (KeyNum == 1)
       {

@@ -37,7 +37,7 @@ unsigned char TEMP_SEND_TIME = 10;
 // 温度转换状态：0不可转换；1可转换
 unsigned char TEMP_CONVERT_STATUS = 1;
 // 温度串口发送状态：0不可发送；1可发送
-unsigned char TEMP_SEND_STATUS = 1;
+unsigned char TEMP_SEND_STATUS = 0;
 // 温度*10000
 long Temp;
 // 温度整数部分(char)(Temp / 10000)
