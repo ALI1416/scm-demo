@@ -97,82 +97,83 @@ void main()
   while (1)
   {
     // 数据交互格式：
-    // 电脑-->单片机：0x01....
-    //  设置：0x0101....
-    //    ■设置温度设置：0x010101....
-    //      后面4位(4x8bit)分别为：H高温报警 L低温报警 C串口发送时间间隔 F温度读取时间间隔
-    //  读取：0x0102....
-    //    ■读取温度：0x010201
-    //    ■读取温度设置：0x010202
-    // 单片机-->电脑：0x02....
-    //  回复电脑：0x0201....
-    //    ■温度：0x020101....
-    //      后面4位(4x8bit)为温度x10000
-    //    ■温度设置：0x020102....
-    //      后面4位(4x8bit)分别为：H高温报警 L低温报警 C串口发送时间间隔 F温度读取时间间隔
-    //  自动发送：0x0202....
-    //    ■发送温度：0x020201....
-    //      后面4位(4x8bit)为温度x10000
-    //  报警：0x0203....
-    //    ■温度过高报警：0x020301....
-    //      后面4位(4x8bit)为温度x10000
-    //    ■温度过低报警：0x020302....
-    //      后面4位(4x8bit)为温度x10000
+    // 电脑-->单片机-->电脑：0x01-0x9F
+    //  设置：0x0101-0x01FE
+    //    ■设置温度配置：0x0101+(4x8bit) H高温报警 L低温报警 C串口发送时间间隔 F温度读取时间间隔
+    //      返回：0x010100失败；0x010101成功
+    //  读取：0x0201-0x02FE
+    //    ■读取温度：0x0201
+    //      返回：0x0201+(4x8bit) 温度x10000
+    //    ■读取温度配置：0x0202
+    //      返回：0x0202+(4x8bit) H高温报警 L低温报警 C串口发送时间间隔 F温度读取时间间隔
+    // 单片机-->电脑：0xA0-0xFE
+    //  自动发送：0xA001-0xA0FE
+    //    ■自动发送温度：0xA001+(4x8bit) 温度x10000
+    //  报警：0xA101-0xA1FE
+    //    ■温度过高报警：0xA101+(4x8bit) 温度x10000
+    //    ■温度过低报警：0xA102+(4x8bit) 温度x10000
     /* 数据接收完成 */
     if (UART_RECEIVE_STATUS == 3)
     {
+      // 设置：0x0101-0x01FE
       if (UART_RECEIVE_DATA[0] == 0x01)
       {
+        // 设置温度配置：0x0101+(4x8bit) H高温报警 L低温报警 C串口发送时间间隔 F温度读取时间间隔
         if (UART_RECEIVE_DATA[1] == 0x01)
         {
-          // 0x010101....设置温度设置
-          if (UART_RECEIVE_DATA[2] == 0x01)
+          // 读取数据
+          THigh = UART_RECEIVE_DATA[2];
+          TLow = UART_RECEIVE_DATA[3];
+          TSend = UART_RECEIVE_DATA[4];
+          TConvert = UART_RECEIVE_DATA[5];
+          // 数据正确
+          if (THigh <= TEMP_MAX && TLow >= TEMP_MIN && THigh > TLow                 //
+              && TSend > TEMP_SEND_MIN - 1 && TSend < TEMP_SEND_MAX + 1             //
+              && TConvert > TEMP_CONVERT_MIN - 1 && TConvert < TEMP_CONVERT_MAX + 1 //
+              && TSend >= TConvert)
           {
-            // 读取数据
-            THigh = UART_RECEIVE_DATA[3];
-            TLow = UART_RECEIVE_DATA[4];
-            TSend = UART_RECEIVE_DATA[5];
-            TConvert = UART_RECEIVE_DATA[6];
-            // 数据正确
-            if (THigh <= TEMP_MAX && TLow >= TEMP_MIN && THigh > TLow                 //
-                && TSend > TEMP_SEND_MIN - 1 && TSend < TEMP_SEND_MAX + 1             //
-                && TConvert > TEMP_CONVERT_MIN - 1 && TConvert < TEMP_CONVERT_MAX + 1 //
-                && TSend >= TConvert)
-            {
-              TEMP_HIGH = THigh;
-              TEMP_LOW = TLow;
-              TEMP_SEND_TIME = TSend;
-              TEMP_CONVERT_TIME = TConvert;
-              // 写入数据到存储器
-              AT24C02_WriteByte(0, TEMP_HIGH);
-              delayMs(5);
-              AT24C02_WriteByte(1, TEMP_LOW);
-              delayMs(5);
-              AT24C02_WriteByte(2, TEMP_SEND_TIME);
-              delayMs(5);
-              AT24C02_WriteByte(3, TEMP_CONVERT_TIME);
-            }
+            TEMP_HIGH = THigh;
+            TEMP_LOW = TLow;
+            TEMP_SEND_TIME = TSend;
+            TEMP_CONVERT_TIME = TConvert;
+            // 写入数据到存储器
+            AT24C02_WriteByte(0, TEMP_HIGH);
+            delayMs(5);
+            AT24C02_WriteByte(1, TEMP_LOW);
+            delayMs(5);
+            AT24C02_WriteByte(2, TEMP_SEND_TIME);
+            delayMs(5);
+            AT24C02_WriteByte(3, TEMP_CONVERT_TIME);
+            // 0x010101成功
+            UartSendString("\x01\x01\x01\x01");
+          }
+          // 数据错误
+          else
+          {
+            // 0x010100失败
+            UartSendString("\x01\x01\x01\x00");
           }
         }
+      }
+      // 读取：0x0201-0x02FE
+      else if (UART_RECEIVE_DATA[0] == 0x02)
+      {
+        // 读取温度：0x0201
+        if (UART_RECEIVE_DATA[1] == 0x01)
+        {
+          // 0x0201+(4x8bit) 温度x10000
+          UartSendString("\x02\x01");
+          UartSendLong(Temp);
+        }
+        // 读取温度配置：0x0202
         else if (UART_RECEIVE_DATA[1] == 0x02)
         {
-          // 0x010201读取温度
-          if (UART_RECEIVE_DATA[2] == 0x01)
-          {
-            // 0x020101回复电脑温度
-            UartSendString("\x02\x01\x01");
-            UartSendLong(Temp);
-          }
-          // 0x010202读取温度设置
-          else if (UART_RECEIVE_DATA[2] == 0x02)
-          {
-            // 0x020102回复电脑温度设置
-            UartSendString("\x02\x01\x02");
-            UartSendByte(TEMP_HIGH);
-            UartSendByte(TEMP_LOW);
-            UartSendByte(TEMP_SEND_TIME);
-            UartSendByte(TEMP_CONVERT_TIME);
-          }
+          // 0x0202+(4x8bit) H高温报警 L低温报警 C串口发送时间间隔 F温度读取时间间隔
+          UartSendString("\x02\x02");
+          UartSendByte(TEMP_HIGH);
+          UartSendByte(TEMP_LOW);
+          UartSendByte(TEMP_SEND_TIME);
+          UartSendByte(TEMP_CONVERT_TIME);
         }
       }
       // 重置状态和下标
@@ -182,8 +183,8 @@ void main()
     /* 温度串口发送时间到 */
     if (TEMP_SEND_STATUS == 1)
     {
-      // 0x020201自动发送温度
-      UartSendString("\x02\x02\x01");
+      // 发送温度：0xA001+(4x8bit) 温度x10000
+      UartSendString("\xA0\x01");
       UartSendLong(Temp);
       TEMP_SEND_STATUS = 0;
     }
@@ -203,8 +204,8 @@ void main()
         LCD_ShowChar(2, 16, 'H');
         if (TEMP_ALARM_STATUS != 1)
         {
-          // 0x020301温度过高报警
-          UartSendString("\x02\x03\x01");
+          // 温度过高报警：0xA101+(4x8bit) 温度x10000
+          UartSendString("\xA1\x01");
           UartSendLong(Temp);
           TEMP_ALARM_STATUS = 1;
         }
@@ -214,8 +215,8 @@ void main()
         LCD_ShowChar(2, 16, 'L');
         if (TEMP_ALARM_STATUS != 2)
         {
-          // 0x020302温度过低报警
-          UartSendString("\x02\x03\x02");
+          // 温度过低报警：0xA102+(4x8bit) 温度x10000
+          UartSendString("\xA1\x02");
           UartSendLong(Temp);
           TEMP_ALARM_STATUS = 2;
         }
