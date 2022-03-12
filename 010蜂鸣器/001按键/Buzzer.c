@@ -17,7 +17,7 @@ void Buzzer_Delay500us()
 }
 
 /**
-  * @brief  蜂鸣器发声
+  * @brief  蜂鸣器发声(1000Hz)
   * @param  ms 发声的时长，范围：0~32767
   * @retval 无
   */
