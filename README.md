@@ -54,6 +54,11 @@
 4. 重启单片机
 5. 烧录完成
 
+## 项目链接
+[Github](https://github.com/ALI1416/scm)
+
+[Gitee](https://gitee.com/ALI1416/scm)
+
 ## 许可证
 [![License](https://img.shields.io/badge/license-BSD-brightgreen)](https://opensource.org/licenses/BSD-3-Clause)
 
