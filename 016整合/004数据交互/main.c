@@ -48,6 +48,8 @@ char TEMP_HIGH = 30;
 char TEMP_LOW = 20;
 // 温度报警状态：0正常；1温度过高；2温度过低
 unsigned char TEMP_ALARM_STATUS;
+// 显示的温度设置(未保存)
+char THighShow, TLowShow, TSendShow, TConvertShow;
 
 // 温度设置刷新状态：0不可刷新；1可刷新
 unsigned char TEMP_SET_REFRESH_STATUS = 0;
@@ -90,6 +92,10 @@ void main()
     TEMP_SEND_TIME = TSend;
     TEMP_CONVERT_TIME = TConvert;
   }
+  THighShow = TEMP_HIGH;
+  TLowShow = TEMP_LOW;
+  TSendShow = TEMP_SEND_TIME;
+  TConvertShow = TEMP_CONVERT_TIME;
   // 上电先转换一次温度，防止第一次读数据错误
   DS18B20_ConvertT();
   // 等待转换完成
@@ -136,6 +142,10 @@ void main()
             TEMP_LOW = TLow;
             TEMP_SEND_TIME = TSend;
             TEMP_CONVERT_TIME = TConvert;
+            THighShow = TEMP_HIGH;
+            TLowShow = TEMP_LOW;
+            TSendShow = TEMP_SEND_TIME;
+            TConvertShow = TEMP_CONVERT_TIME;
             // 写入数据到存储器
             AT24C02_WriteByte(0, TEMP_HIGH);
             delayMs(5);
@@ -232,10 +242,10 @@ void main()
     if (TEMP_SET_MODE == 0 && TEMP_SET_REFRESH_STATUS == 1)
     {
       // H+12L-34C10F01 H
-      LCD_ShowSignedNum(2, 2, TEMP_HIGH, 2);
-      LCD_ShowSignedNum(2, 6, TEMP_LOW, 2);
-      LCD_ShowNum(2, 10, TEMP_SEND_TIME, 2);
-      LCD_ShowNum(2, 13, TEMP_CONVERT_TIME, 2);
+      LCD_ShowSignedNum(2, 2, THighShow, 2);
+      LCD_ShowSignedNum(2, 6, TLowShow, 2);
+      LCD_ShowNum(2, 10, TSendShow, 2);
+      LCD_ShowNum(2, 13, TConvertShow, 2);
       TEMP_SET_REFRESH_STATUS = 0;
     }
     /* 温度设置按键被按下 */
@@ -259,33 +269,33 @@ void main()
           // 高温报警
           if (TEMP_SET_SELECT == 0)
           {
-            if (TEMP_HIGH < TEMP_MAX)
+            if (THighShow < TEMP_MAX)
             {
-              TEMP_HIGH++;
+              THighShow++;
             }
           }
           // 低温报警
           else if (TEMP_SET_SELECT == 1)
           {
-            if (TEMP_LOW < TEMP_HIGH - 1)
+            if (TLowShow < THighShow - 1)
             {
-              TEMP_LOW++;
+              TLowShow++;
             }
           }
           // 串口发送时间间隔
           else if (TEMP_SET_SELECT == 2)
           {
-            if (TEMP_SEND_TIME < TEMP_SEND_MAX)
+            if (TSendShow < TEMP_SEND_MAX)
             {
-              TEMP_SEND_TIME++;
+              TSendShow++;
             }
           }
           // 温度读取时间间隔
           else
           {
-            if (TEMP_CONVERT_TIME < TEMP_CONVERT_MAX && TEMP_SEND_TIME > TEMP_CONVERT_TIME)
+            if (TConvertShow < TEMP_CONVERT_MAX && TSendShow > TConvertShow)
             {
-              TEMP_CONVERT_TIME++;
+              TConvertShow++;
             }
           }
         }
@@ -295,39 +305,43 @@ void main()
           // 高温报警
           if (TEMP_SET_SELECT == 0)
           {
-            if (TEMP_HIGH > TEMP_LOW + 1)
+            if (THighShow > TLowShow + 1)
             {
-              TEMP_HIGH--;
+              THighShow--;
             }
           }
           // 低温报警
           else if (TEMP_SET_SELECT == 1)
           {
-            if (TEMP_LOW > TEMP_MIN)
+            if (TLowShow > TEMP_MIN)
             {
-              TEMP_LOW--;
+              TLowShow--;
             }
           }
           // 串口发送时间间隔
           else if (TEMP_SET_SELECT == 2)
           {
-            if (TEMP_SEND_TIME > TEMP_SEND_MIN && TEMP_SEND_TIME > TEMP_CONVERT_TIME)
+            if (TSendShow > TEMP_SEND_MIN && TSendShow > TConvertShow)
             {
-              TEMP_SEND_TIME--;
+              TSendShow--;
             }
           }
           // 温度读取时间间隔
           else
           {
-            if (TEMP_CONVERT_TIME > TEMP_CONVERT_MIN)
+            if (TConvertShow > TEMP_CONVERT_MIN)
             {
-              TEMP_CONVERT_TIME--;
+              TConvertShow--;
             }
           }
         }
         // 按键4：保存
         else if (KeyNum == 4)
         {
+          TEMP_HIGH = THighShow;
+          TEMP_LOW = TLowShow;
+          TEMP_SEND_TIME = TSendShow;
+          TEMP_CONVERT_TIME = TConvertShow;
           TEMP_SET_MODE = 0;
           TEMP_SET_SELECT = -1;
           // 写入数据到存储器
@@ -350,19 +364,19 @@ void main()
       {
         if (TEMP_SET_SELECT == 0)
         {
-          LCD_ShowSignedNum(2, 2, TEMP_HIGH, 2);
+          LCD_ShowSignedNum(2, 2, THighShow, 2);
         }
         else if (TEMP_SET_SELECT == 1)
         {
-          LCD_ShowSignedNum(2, 6, TEMP_LOW, 2);
+          LCD_ShowSignedNum(2, 6, TLowShow, 2);
         }
         else if (TEMP_SET_SELECT == 2)
         {
-          LCD_ShowNum(2, 10, TEMP_SEND_TIME, 2);
+          LCD_ShowNum(2, 10, TSendShow, 2);
         }
         else
         {
-          LCD_ShowNum(2, 13, TEMP_CONVERT_TIME, 2);
+          LCD_ShowNum(2, 13, TConvertShow, 2);
         }
       }
       // 灭
@@ -371,30 +385,30 @@ void main()
         if (TEMP_SET_SELECT == 0)
         {
           LCD_ShowString(2, 2, "   ");
-          LCD_ShowSignedNum(2, 6, TEMP_LOW, 2);
-          LCD_ShowNum(2, 10, TEMP_SEND_TIME, 2);
-          LCD_ShowNum(2, 13, TEMP_CONVERT_TIME, 2);
+          LCD_ShowSignedNum(2, 6, TLowShow, 2);
+          LCD_ShowNum(2, 10, TSendShow, 2);
+          LCD_ShowNum(2, 13, TConvertShow, 2);
         }
         else if (TEMP_SET_SELECT == 1)
         {
           LCD_ShowString(2, 6, "   ");
-          LCD_ShowSignedNum(2, 2, TEMP_HIGH, 2);
-          LCD_ShowNum(2, 10, TEMP_SEND_TIME, 2);
-          LCD_ShowNum(2, 13, TEMP_CONVERT_TIME, 2);
+          LCD_ShowSignedNum(2, 2, THighShow, 2);
+          LCD_ShowNum(2, 10, TSendShow, 2);
+          LCD_ShowNum(2, 13, TConvertShow, 2);
         }
         else if (TEMP_SET_SELECT == 2)
         {
           LCD_ShowString(2, 10, "  ");
-          LCD_ShowSignedNum(2, 2, TEMP_HIGH, 2);
-          LCD_ShowSignedNum(2, 6, TEMP_LOW, 2);
-          LCD_ShowNum(2, 13, TEMP_CONVERT_TIME, 2);
+          LCD_ShowSignedNum(2, 2, THighShow, 2);
+          LCD_ShowSignedNum(2, 6, TLowShow, 2);
+          LCD_ShowNum(2, 13, TConvertShow, 2);
         }
         else
         {
           LCD_ShowString(2, 13, "  ");
-          LCD_ShowSignedNum(2, 2, TEMP_HIGH, 2);
-          LCD_ShowSignedNum(2, 6, TEMP_LOW, 2);
-          LCD_ShowNum(2, 10, TEMP_SEND_TIME, 2);
+          LCD_ShowSignedNum(2, 2, THighShow, 2);
+          LCD_ShowSignedNum(2, 6, TLowShow, 2);
+          LCD_ShowNum(2, 10, TSendShow, 2);
         }
       }
     }
