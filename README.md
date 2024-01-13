@@ -12,7 +12,7 @@ scm-demo 单片机示例
 ### 安装驱动
 
 1. 解压`CH341SER.zip`
-2. 双击`SETUP.EXE`并安装
+2. 双击`SETUP.EXE`进行安装
 
 ### 安装Keil5 C51
 
@@ -25,7 +25,8 @@ scm-demo 单片机示例
 ### 安装STC-ISP STC烧录软件
 
 1. 下载地址：<http://stcmcudata.com/>
-2. 安装驱动：进入目录`USB to UART Driver`->`CH340_CH341`，双击`ch341ser.exe`安装即可
+2. 找到右侧`STC-ISP下载编程烧录软件`
+3. 下载第一个软件`STC-ISP软件V6.92K版`
 
 ## 软件使用
 
@@ -41,16 +42,16 @@ scm-demo 单片机示例
 6. 文档空白处右键，选择`Insert '#include <REGX52.H>'`
 7. 输入代码
 
-    ```cpp
-    #include <REGX52.H>
-    void main()
-    {
-      P2 = 0xFE;
-      while (1)
-      {
-      }
-    }
-    ```
+```cpp
+#include <REGX52.H>
+void main()
+{
+  P2 = 0xFE;
+  while (1)
+  {
+  }
+}
+```
 
 8. 点击图片所示按钮![构建生成hex文件](img/001构建生成hex文件.jpg)，选择`Output`，勾选`Create HEX File`，点击`OK`
 9. 点击图片所示按钮![构建](img/002构建.jpg)
@@ -69,6 +70,14 @@ scm-demo 单片机示例
 #### 导入项目/工作空间
 
 1. 点击`Project`->`Open Project`，选择项目/工作空间，点击`打开`
+
+### 使用VS Code插件Keil Assistant
+
+1. 拓展搜索`Keil Assistant`并安装
+2. 拓展设置：修改`Uv4 Path`为安装路径
+3. 左下角找到`KEIL UVISION PROJECT`
+4. 点击右侧`+`号导入项目
+5. 点击`Target 1`右侧第一个`Build (F7)`编译项目
 
 ### 使用STC-ISP STC烧录软件
 
