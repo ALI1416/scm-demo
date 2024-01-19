@@ -200,7 +200,7 @@ void main()
         // 温度报警：0x40
         UartSendByte(0x40);
         // 温度报警状态
-        UartSendLong(TEMP_ALARM_STATUS);
+        UartSendByte(TEMP_ALARM_STATUS);
       }
       TEMP_SEND_STATUS = 0;
     }
@@ -218,13 +218,13 @@ void main()
       if (TempInt >= TEMP_HIGH)
       {
         // 温度过高
-        TEMP_ALARM_STATUS |= 0x01;
+        TEMP_ALARM_STATUS = 0x01;
         LCD_ShowChar(2, 16, 'H');
       }
       else if (TempInt < TEMP_LOW)
       {
         // 温度过低
-        TEMP_ALARM_STATUS |= 0x02;
+        TEMP_ALARM_STATUS = 0x02;
         LCD_ShowChar(2, 16, 'L');
       }
       else
