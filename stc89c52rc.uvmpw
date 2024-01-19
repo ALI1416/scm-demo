@@ -160,4 +160,12 @@
     <PathAndName>.\016整合\004数据交互\数据交互.uvproj</PathAndName>
   </project>
 
+  <project>
+    <PathAndName>.\016整合\005数据交互2\数据交互2.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\016整合\音乐\音乐.uvproj</PathAndName>
+  </project>
+
 </ProjectWorkspace>

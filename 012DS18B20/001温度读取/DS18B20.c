@@ -18,7 +18,7 @@ void DS18B20_ConvertT()
 
 /**
   * @brief  DS18B20读取温度
-  * @retval 温度数值*10000
+  * @retval 温度数值*100000
   */
 long DS18B20_ReadT()
 {

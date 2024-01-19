@@ -2,10 +2,8 @@
 #include "UART.H"
 #include "TIMER0.H"
 #include "DS18B20.H"
-#include "LCD1602.H"
 #include "OneWire.H"
 #include "DELAY.H"
-#include "Key.H"
 #include "AT24C02.h"
 
 // 接收数据数组长度
@@ -53,14 +51,6 @@ char THighShow, TLowShow, TSendShow, TConvertShow;
 
 // 温度设置刷新状态：0不可刷新；1可刷新
 unsigned char TEMP_SET_REFRESH_STATUS = 0;
-// 温度设置模式：0关闭；1开启
-unsigned char TEMP_SET_MODE = 0;
-// 温度设置选项：0高温报警；1低温报警；2串口发送时间间隔；3温度读取时间间隔
-char TEMP_SET_SELECT = -1;
-// 温度设置闪烁状态：0亮；1灭
-unsigned char TEMP_SET_FLASH_STATUS = 0;
-// 温度设置调节按键序号：1切换调节；2数值+1；3数值-1；4保存调节
-unsigned char KeyNum;
 
 void main()
 {
@@ -68,14 +58,6 @@ void main()
   char THigh, TLow, TSend, TConvert;
   Timer0_Init();
   UartInit();
-  LCD_Init();
-  // Temp:+123.4567℃
-  //\xDF是℃左上角圆圈，\x43代表字母C
-  LCD_ShowString(1, 1, "Temp:    .    \xDF\x43");
-  // H+12L-34E10R01 H
-  // H高温报警 L低温报警 C串口发送时间间隔 F温度读取时间间隔
-  // 最后一个H代表温度过高，L代表温度过低，不显示代表温度正常
-  LCD_ShowString(2, 1, "H   L   C  F");
   // 读取存储器里面的温度设置
   THigh = AT24C02_ReadByte(0);
   TLow = AT24C02_ReadByte(1);
@@ -212,212 +194,23 @@ void main()
       Temp = DS18B20_ReadT();
       // 显示温度
       TempInt = (char)(Temp / 10000);
-      LCD_ShowSignedNum(1, 6, TempInt, 3);                 // 整数部分
-      LCD_ShowNum(1, 11, (unsigned int)(Temp % 10000), 4); // 小数部分
       // 显示高温还是低温
       if (TempInt >= TEMP_HIGH)
       {
         // 温度过高
         TEMP_ALARM_STATUS |= 0x01;
-        LCD_ShowChar(2, 16, 'H');
       }
       else if (TempInt < TEMP_LOW)
       {
         // 温度过低
         TEMP_ALARM_STATUS |= 0x02;
-        LCD_ShowChar(2, 16, 'L');
       }
       else
       {
         // 正常
         TEMP_ALARM_STATUS = 0;
-        LCD_ShowChar(2, 16, ' ');
       }
       TEMP_CONVERT_STATUS = 0;
-    }
-    /* 温度设置刷新时间到 */
-    if (TEMP_SET_MODE == 0 && TEMP_SET_REFRESH_STATUS == 1)
-    {
-      // H+12L-34C10F01 H
-      LCD_ShowSignedNum(2, 2, THighShow, 2);
-      LCD_ShowSignedNum(2, 6, TLowShow, 2);
-      LCD_ShowNum(2, 10, TSendShow, 2);
-      LCD_ShowNum(2, 13, TConvertShow, 2);
-      TEMP_SET_REFRESH_STATUS = 0;
-    }
-    /* 温度设置按键被按下 */
-    // P3_1和P3_0对应按键1和2被串口通信占用，串口有数据通过时，可以会有干扰
-    KeyNum = Key();
-    if (KeyNum != 0)
-    {
-      // 按键1：温度设置调节按键序号：1切换调节；2数值+1；3数值-1；4保存调节
-      if (KeyNum == 1)
-      {
-        TEMP_SET_MODE = 1;
-        // 温度设置选项：0高温报警；1低温报警；2串口发送时间间隔；3温度读取时间间隔
-        TEMP_SET_SELECT = (TEMP_SET_SELECT + 1) % 4;
-      }
-      // 当为设置模式时，2,3,4按键才有效
-      if (TEMP_SET_MODE == 1)
-      {
-        // 按键2：+1
-        if (KeyNum == 2)
-        {
-          // 高温报警
-          if (TEMP_SET_SELECT == 0)
-          {
-            if (THighShow < TEMP_MAX)
-            {
-              THighShow++;
-            }
-          }
-          // 低温报警
-          else if (TEMP_SET_SELECT == 1)
-          {
-            if (TLowShow < THighShow - 1)
-            {
-              TLowShow++;
-            }
-          }
-          // 串口发送时间间隔
-          else if (TEMP_SET_SELECT == 2)
-          {
-            if (TSendShow < TEMP_SEND_MAX)
-            {
-              TSendShow++;
-            }
-          }
-          // 温度读取时间间隔
-          else
-          {
-            if (TConvertShow < TEMP_CONVERT_MAX && TSendShow > TConvertShow)
-            {
-              TConvertShow++;
-            }
-          }
-        }
-        // 按键3：-1
-        else if (KeyNum == 3)
-        {
-          // 高温报警
-          if (TEMP_SET_SELECT == 0)
-          {
-            if (THighShow > TLowShow + 1)
-            {
-              THighShow--;
-            }
-          }
-          // 低温报警
-          else if (TEMP_SET_SELECT == 1)
-          {
-            if (TLowShow > TEMP_MIN)
-            {
-              TLowShow--;
-            }
-          }
-          // 串口发送时间间隔
-          else if (TEMP_SET_SELECT == 2)
-          {
-            if (TSendShow > TEMP_SEND_MIN && TSendShow > TConvertShow)
-            {
-              TSendShow--;
-            }
-          }
-          // 温度读取时间间隔
-          else
-          {
-            if (TConvertShow > TEMP_CONVERT_MIN)
-            {
-              TConvertShow--;
-            }
-          }
-        }
-        // 按键4：保存
-        else if (KeyNum == 4)
-        {
-          TEMP_HIGH = THighShow;
-          TEMP_LOW = TLowShow;
-          TEMP_SEND_TIME = TSendShow;
-          TEMP_CONVERT_TIME = TConvertShow;
-          TEMP_SET_MODE = 0;
-          TEMP_SET_SELECT = -1;
-          // 写入数据到存储器
-          AT24C02_WriteByte(0, TEMP_HIGH);
-          delayMs(5);
-          AT24C02_WriteByte(1, TEMP_LOW);
-          delayMs(5);
-          AT24C02_WriteByte(2, TEMP_SEND_TIME);
-          delayMs(5);
-          AT24C02_WriteByte(3, TEMP_CONVERT_TIME);
-          // 读取温度参数响应：0xC1
-          UartSendByte(0xC1);
-          // F温度读取时间间隔
-          UartSendByte(TEMP_CONVERT_TIME);
-          // C串口发送时间间隔
-          UartSendByte(TEMP_SEND_TIME);
-          // H高温报警
-          UartSendByte(TEMP_HIGH);
-          // L低温报警
-          UartSendByte(TEMP_LOW);
-        }
-      }
-    }
-    /* 温度设置的时候闪烁 */
-    if (TEMP_SET_MODE == 1)
-    {
-      // H+12L-34C10F01 H
-      // 亮
-      if (TEMP_SET_FLASH_STATUS == 0)
-      {
-        if (TEMP_SET_SELECT == 0)
-        {
-          LCD_ShowSignedNum(2, 2, THighShow, 2);
-        }
-        else if (TEMP_SET_SELECT == 1)
-        {
-          LCD_ShowSignedNum(2, 6, TLowShow, 2);
-        }
-        else if (TEMP_SET_SELECT == 2)
-        {
-          LCD_ShowNum(2, 10, TSendShow, 2);
-        }
-        else
-        {
-          LCD_ShowNum(2, 13, TConvertShow, 2);
-        }
-      }
-      // 灭
-      else
-      {
-        if (TEMP_SET_SELECT == 0)
-        {
-          LCD_ShowString(2, 2, "   ");
-          LCD_ShowSignedNum(2, 6, TLowShow, 2);
-          LCD_ShowNum(2, 10, TSendShow, 2);
-          LCD_ShowNum(2, 13, TConvertShow, 2);
-        }
-        else if (TEMP_SET_SELECT == 1)
-        {
-          LCD_ShowString(2, 6, "   ");
-          LCD_ShowSignedNum(2, 2, THighShow, 2);
-          LCD_ShowNum(2, 10, TSendShow, 2);
-          LCD_ShowNum(2, 13, TConvertShow, 2);
-        }
-        else if (TEMP_SET_SELECT == 2)
-        {
-          LCD_ShowString(2, 10, "  ");
-          LCD_ShowSignedNum(2, 2, THighShow, 2);
-          LCD_ShowSignedNum(2, 6, TLowShow, 2);
-          LCD_ShowNum(2, 13, TConvertShow, 2);
-        }
-        else
-        {
-          LCD_ShowString(2, 13, "  ");
-          LCD_ShowSignedNum(2, 2, THighShow, 2);
-          LCD_ShowSignedNum(2, 6, TLowShow, 2);
-          LCD_ShowNum(2, 10, TSendShow, 2);
-        }
-      }
     }
   }
 }
@@ -474,12 +267,6 @@ void Timer0_Routine() interrupt 1
       UART_RECEIVE_STATUS = 3;
     }
   }
-  /* 按键驱动 每隔20毫秒 */
-  if ((++Key_Count) >= 20)
-  {
-    Key_Count = 0;
-    Key_Loop();
-  }
   /* 温度转换 每隔TEMP_SEND_TIME秒 */
   if ((++Temp_Convert_Count) >= 1000 * TEMP_CONVERT_TIME)
   {
@@ -491,17 +278,5 @@ void Timer0_Routine() interrupt 1
   {
     Temp_Send_Count = 0;
     TEMP_SEND_STATUS = 1;
-  }
-  /* 温度设置刷新 每隔100毫秒 */
-  if ((++Temp_Set_Refresh_Count) >= 100)
-  {
-    Temp_Set_Refresh_Count = 0;
-    TEMP_SET_REFRESH_STATUS = 1;
-  }
-  /* 温度设置闪烁 每隔500毫秒 */
-  if ((++Temp_Set_Flash_Count) >= 500)
-  {
-    Temp_Set_Flash_Count = 0;
-    TEMP_SET_FLASH_STATUS = !TEMP_SET_FLASH_STATUS;
   }
 }
