@@ -128,14 +128,17 @@ void main()
       // 显示高温还是低温
       if (TempInt >= TEMP_HIGH)
       {
+        // 高温
         LCD_ShowChar(2, 16, 'H');
       }
       else if (TempInt < TEMP_LOW)
       {
+        // 低温
         LCD_ShowChar(2, 16, 'L');
       }
       else
       {
+        // 正常
         LCD_ShowChar(2, 16, ' ');
       }
       TEMP_CONVERT_STATUS = 0;
