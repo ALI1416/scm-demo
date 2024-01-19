@@ -15,12 +15,12 @@ unsigned char UART_RECEIVE_INDEX = 0;
 // 3接收完成(数据要在UART_RECEIVE_SIZE毫秒内发送完成，否则无效)
 unsigned char UART_RECEIVE_STATUS = 0;
 
-// 温度转换间隔(秒)(范围：1-65)
+// 温度转换间隔(秒)
 unsigned char TEMP_CONVERT_TIME = 1;
-// 温度串口发送间隔(秒)(范围：1-65)
+// 温度串口发送间隔(秒)
 unsigned char TEMP_SEND_TIME = 10;
 // 温度转换状态：0不可转换；1可转换
-unsigned char TEMP_CONVERT_STATUS = 0;
+unsigned char TEMP_CONVERT_STATUS = 1;
 // 温度串口发送状态：0不可发送；1可发送
 unsigned char TEMP_SEND_STATUS = 0;
 // 温度*10000
@@ -32,17 +32,25 @@ void main()
   UartInit();
   LCD_Init();
   LCD_ShowString(1, 1, "Temperature:");
-  DS18B20_ConvertT(); //上电先转换一次温度，防止第一次读数据错误
+  LCD_ShowChar(2, 5, '.');
+  // 上电先转换一次温度，防止第一次读数据错误
+  DS18B20_ConvertT();
+  // 等待转换完成
+  delayMs(500);
   while (1)
   {
     /* 数据接收完成 */
     if (UART_RECEIVE_STATUS == 3)
     {
-      // 再把数据发送给电脑
-      UartSendByteArray(UART_RECEIVE_DATA, UART_RECEIVE_INDEX);
       // 重置状态和下标
       UART_RECEIVE_INDEX = 0;
       UART_RECEIVE_STATUS = 0;
+    }
+    /* 温度串口发送时间到 */
+    if (TEMP_SEND_STATUS == 1)
+    {
+      UartSendLong(Temp);
+      TEMP_SEND_STATUS = 0;
     }
     /* 温度转换时间到 */
     if (TEMP_CONVERT_STATUS == 1)
@@ -50,17 +58,10 @@ void main()
       // 温度转换
       DS18B20_ConvertT();
       Temp = DS18B20_ReadT();
-      //LCD去显示
-      LCD_ShowSignedNum(2, 1, (int)(Temp / 10000), 3);    //显示温度整数部分
-      LCD_ShowChar(2, 5, '.');                            //显示小数点
-      LCD_ShowNum(2, 6, (unsigned int)(Temp % 10000), 4); //显示温度小数部分
+      // 显示温度
+      LCD_ShowSignedNum(2, 1, (int)(Temp / 10000), 3);    // 整数部分
+      LCD_ShowNum(2, 6, (unsigned int)(Temp % 10000), 4); // 小数部分
       TEMP_CONVERT_STATUS = 0;
-    }
-    /* 温度串口发送时间到 */
-    if (TEMP_SEND_STATUS == 1)
-    {
-      UartSendLong(Temp);
-      TEMP_SEND_STATUS = 0;
     }
   }
 }
@@ -97,8 +98,8 @@ void Timer0_Routine() interrupt 1
   // 静态，防止被销毁
   static unsigned int UART_Count, Temp_Convert_Count, Temp_Send_Count;
   // 复位
-  TH0 = 0xFC;
   TL0 = 0x66;
+  TH0 = 0xFC;
   /* 串口接收 每隔UART_RECEIVE_SIZE毫秒 */
   if ((++UART_Count) >= UART_RECEIVE_SIZE)
   {
