@@ -190,10 +190,17 @@ void main()
     /* 温度串口发送时间到 */
     if (TEMP_SEND_STATUS == 1)
     {
+      unsigned char t0 = Temp >> 24;
+      unsigned char t1 = (Temp & 0x00FF0000) >> 16;
+      unsigned char t2 = (Temp & 0x0000FF00) >> 8;
+      unsigned char t3 = Temp & 0x000000FF;
       // 温度事件：0x00
       UartSendByte(0x00);
       // 温度x10000
-      UartSendLong(Temp);
+      UartSendByte(t0);
+      UartSendByte(t1);
+      UartSendByte(t2);
+      UartSendByte(t3);
       if (TEMP_ALARM_STATUS != 0)
       {
         delayMs(10);
