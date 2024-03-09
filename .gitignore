@@ -3,3 +3,6 @@ Listings/
 Objects/
 *.uvopt
 *.uvgui.*
+
+DebugConfig/
+*.uvguix.*
