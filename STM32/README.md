@@ -16,7 +16,7 @@
 
 ## 使用`Keil5 MDK`
 
-### 创建基于寄存器的项目
+### 创建基于`寄存器`的项目
 
 1. 点击`Project`->`New uVision Project`，选择一个文件夹，并输入文件名，点击`保存`
 2. 在`Search`里面输入`stm32f103c8`，选择`STMicroelectronics`里面的`STM32F103C8`，点击`OK`
@@ -56,9 +56,48 @@ int main()
 ```
 
 21. 点击图片所示按钮![构建](img/002构建.png)
-22. 接好单片机并插上`STLink`，默认程序红灯电源常量，蓝灯PC13闪烁，接线方式见<https://jiangxiekeji.com/problem/p1-2.html>
+22. 接好单片机并插上`STLink`，默认程序红灯电源常量，蓝灯PC13闪烁，接线方式见<https://jiangxiekeji.com/problem/p1-2.html>(STLink 2468 [SWCLK SWDIO GND 3.3V] 蓝紫灰白 灰蓝紫白 [GND SWCLK SWIO 3V3] STM32)
 23. 点击图片所示按钮![下载](img/003下载.png)
 24. 蓝灯PC13常亮
+
+### 创建基于`库函数`的项目
+
+1. 在`寄存器`的基础上
+2. 在项目根目录新建`Lib`文件夹(库函数文件夹)
+3. `Target 1`右键选择`Add Group`，改名为`Lib`
+4. 进入`Libraries\STM32F10x_StdPeriph_Driver\src`文件夹
+5. 复制全部文件到`Lib`文件夹，其中`misc.c`(混杂)是内核库函数，其他是外设库函数
+6. 进入`Libraries\STM32F10x_StdPeriph_Driver\inc`文件夹(库函数头文件)，复制全部文件到`Lib`文件夹，并添加到`Keil`
+7. 进入`Project\STM32F10x_StdPeriph_Template`文件夹
+8. 复制`stm32f10x_conf.h`(配置库函数头文件的包含关系、用来参数检查的函数定义)、`stm32f10x_it.c`(中断函数)、`stm32f10x_it.h`(中断函数头文件)到`Main`文件夹，并添加到`Keil`
+9. 打开文件`Start/stm32f10x.h`，拉到最后，可以看到`#ifdef USE_STDPERIPH_DRIVER`，意思是：如果定义了`使用标准外设驱动`，`#include "stm32f10x_conf.h"`这个语句才有效，复制字符串`USE_STDPERIPH_DRIVER`
+10. 打开`选项`、`C/C++`、`Define`粘贴字符串`USE_STDPERIPH_DRIVER`
+11. `Include Paths`再加上`.\Main`和`.\Lib`，或者直接输入`.\Start;.\Main;.\Lib`
+12. `选项`右侧按钮`File Extensions, Books and Environment`，更改显示顺序，把`.\Main`移动到最后
+13. 在`main.c`文件中输入代码
+
+```c
+#include "stm32f10x.h"
+int main()
+{
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+  // PC13亮
+  GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+  // PC13灭
+  // GPIO_SetBits(GPIOC, GPIO_Pin_13);
+  while (1)
+  {
+  }
+}
+```
+
+14. 构建、下载
+15. 蓝灯PC13常亮
 
 ## 使用`VS Code`插件`Keil Assistant`
 
