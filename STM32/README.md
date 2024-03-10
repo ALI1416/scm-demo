@@ -72,7 +72,7 @@ int main()
 8. 复制`stm32f10x_conf.h`(配置库函数头文件的包含关系、用来参数检查的函数定义)、`stm32f10x_it.c`(中断函数)、`stm32f10x_it.h`(中断函数头文件)到`Main`文件夹，并添加到`Keil`
 9. 打开文件`Start/stm32f10x.h`，拉到最后，可以看到`#ifdef USE_STDPERIPH_DRIVER`，意思是：如果定义了`使用标准外设驱动`，`#include "stm32f10x_conf.h"`这个语句才有效，复制字符串`USE_STDPERIPH_DRIVER`
 10. 打开`选项`、`C/C++`、`Define`粘贴字符串`USE_STDPERIPH_DRIVER`
-11. `Include Paths`再加上`.\Main`和`.\Lib`，或者直接输入`.\Start;.\Main;.\Lib`
+11. `Include Paths`再加上`.\Lib`和`.\Main`，或者直接输入`.\Start;.\Lib;.\Main`
 12. `选项`右侧按钮`File Extensions, Books and Environment`，更改显示顺序，把`.\Main`移动到最后
 13. 在`main.c`文件中输入代码
 
