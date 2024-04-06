@@ -1,10 +1,11 @@
 #include "stm32f10x.h"
 
+/**
+ * LED长脚(小头)正极、短脚(大头)负极 使用低电平点亮方式
+ * 接线：长脚正极、短脚A0
+ */
 int main()
 {
-  // LED长脚(小头)正极、短脚(大头)负极 使用低电平点亮方式
-  // 接线：长脚正极、短脚A0
-
   // 1.使用RCC开启GPIO时钟外设
   // 在stm32f10x_rcc文件里，最经常使用的是
   // RCC_AHBPeriphClockCmd、RCC_APB2PeriphClockCmd、RCC_APB1PeriphClockCmd
