@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>蜂鸣器</OutputName>
+          <OutputName>按键控制LED</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Shared\Start;..\..\Shared\Lib;..\..\Shared\System;.\Main</IncludePath>
+              <IncludePath>..\..\Shared\Start;..\..\Shared\Lib;..\..\Shared\System;.\Hardware;.\Main</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -659,6 +659,31 @@
               <FileName>Delay.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Shared\System\Delay.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Hardware</GroupName>
+          <Files>
+            <File>
+              <FileName>Key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Key.c</FilePath>
+            </File>
+            <File>
+              <FileName>Key.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\Key.h</FilePath>
+            </File>
+            <File>
+              <FileName>LED.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\LED.c</FilePath>
+            </File>
+            <File>
+              <FileName>LED.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\LED.h</FilePath>
             </File>
           </Files>
         </Group>

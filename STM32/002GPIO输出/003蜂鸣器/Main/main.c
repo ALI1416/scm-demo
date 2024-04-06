@@ -1,5 +1,5 @@
 #include "stm32f10x.h"
-#include "delay.h"
+#include "Delay.h"
 
 /**
  * GND接负极，IO接B12，VCC接正极
@@ -17,10 +17,10 @@ int main()
     // 响
     GPIO_ResetBits(GPIOB, GPIO_Pin_12);
     // 延时500毫秒
-    delayMs(500);
+    Delay_ms(500);
     // 停
     GPIO_SetBits(GPIOB, GPIO_Pin_12);
     // 延时500毫秒
-    delayMs(500);
+    Delay_ms(500);
   }
 }

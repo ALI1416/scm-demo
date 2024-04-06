@@ -1,5 +1,5 @@
 #include "stm32f10x.h"
-#include "delay.h"
+#include "Delay.h"
 
 /**
 STM32数据类型
@@ -40,7 +40,7 @@ int main()
       // 左移一位
       index = index << 1;
       // 延时500毫秒
-      delayMs(500);
+      Delay_ms(500);
     }
     // 复位
     index = 0x01;

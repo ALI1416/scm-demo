@@ -651,14 +651,14 @@
           <GroupName>System</GroupName>
           <Files>
             <File>
-              <FileName>delay.c</FileName>
+              <FileName>Delay.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Shared\System\delay.c</FilePath>
+              <FilePath>..\..\Shared\System\Delay.c</FilePath>
             </File>
             <File>
-              <FileName>delay.h</FileName>
+              <FileName>Delay.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\Shared\System\delay.h</FilePath>
+              <FilePath>..\..\Shared\System\Delay.h</FilePath>
             </File>
           </Files>
         </Group>
