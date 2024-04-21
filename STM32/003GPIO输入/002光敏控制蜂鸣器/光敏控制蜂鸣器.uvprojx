@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Shared\Start;..\..\Shared\Lib;..\..\Shared\System;.\Hardware;.\Main</IncludePath>
+              <IncludePath>..\..\Shared\Start;..\..\Shared\Lib;..\..\Shared\System;..\..\Shared\Driver;.\Hardware;.\Main</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -663,27 +663,27 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Hardware</GroupName>
+          <GroupName>Driver</GroupName>
           <Files>
             <File>
               <FileName>Buzzer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Hardware\Buzzer.c</FilePath>
+              <FilePath>..\..\Shared\Driver\Buzzer.c</FilePath>
             </File>
             <File>
               <FileName>Buzzer.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Hardware\Buzzer.h</FilePath>
+              <FilePath>..\..\Shared\Driver\Buzzer.h</FilePath>
             </File>
             <File>
               <FileName>LightSensor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Hardware\LightSensor.c</FilePath>
+              <FilePath>..\..\Shared\Driver\LightSensor.c</FilePath>
             </File>
             <File>
               <FileName>LightSensor.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Hardware\LightSensor.h</FilePath>
+              <FilePath>..\..\Shared\Driver\LightSensor.h</FilePath>
             </File>
           </Files>
         </Group>

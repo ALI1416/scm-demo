@@ -9,8 +9,8 @@
  */
 int main()
 {
-  Buzzer_Init();
-  LightSensor_Init();
+  Buzzer_Init(RCC_APB2Periph_GPIOB, GPIOB, GPIO_Pin_12);
+  LightSensor_Init(RCC_APB2Periph_GPIOB, GPIOB, GPIO_Pin_13);
   while (1)
   {
     // 光线暗 响

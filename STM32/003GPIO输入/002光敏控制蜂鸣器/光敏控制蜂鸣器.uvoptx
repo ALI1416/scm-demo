@@ -851,8 +851,8 @@
   </Group>
 
   <Group>
-    <GroupName>Hardware</GroupName>
-    <tvExp>1</tvExp>
+    <GroupName>Driver</GroupName>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -863,7 +863,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Hardware\Buzzer.c</PathWithFileName>
+      <PathWithFileName>..\..\Shared\Driver\Buzzer.c</PathWithFileName>
       <FilenameWithoutPath>Buzzer.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -875,7 +875,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Hardware\Buzzer.h</PathWithFileName>
+      <PathWithFileName>..\..\Shared\Driver\Buzzer.h</PathWithFileName>
       <FilenameWithoutPath>Buzzer.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -887,7 +887,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Hardware\LightSensor.c</PathWithFileName>
+      <PathWithFileName>..\..\Shared\Driver\LightSensor.c</PathWithFileName>
       <FilenameWithoutPath>LightSensor.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -899,7 +899,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Hardware\LightSensor.h</PathWithFileName>
+      <PathWithFileName>..\..\Shared\Driver\LightSensor.h</PathWithFileName>
       <FilenameWithoutPath>LightSensor.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
