@@ -2,7 +2,7 @@
 #define __KEY_H
 
 /**
- * @brief  初始化Key B0、B1和B11
+ * @brief  初始化Key(低电平触发) B0、B1和B11
  */
 void Key_Init(void);
 /**

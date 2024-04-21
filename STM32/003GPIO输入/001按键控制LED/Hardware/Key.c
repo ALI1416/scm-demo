@@ -2,7 +2,7 @@
 #include "Delay.h"
 
 /**
- * @brief  初始化Key B0、B1和B11
+ * @brief  初始化Key(低电平触发) B0、B1和B11
  */
 void Key_Init(void)
 {
@@ -38,7 +38,7 @@ uint8_t Key_GetNum(void)
     // 按下时防抖
     Delay_ms(20);
     // 等待抬起
-    while (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_0) == 1)
+    while (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_0) == 0)
       ;
     // 抬起时防抖
     Delay_ms(20);
@@ -48,7 +48,7 @@ uint8_t Key_GetNum(void)
   {
     /* 2 B1 */
     Delay_ms(20);
-    while (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_1) == 1)
+    while (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_1) == 0)
       ;
     Delay_ms(20);
     return 2;
@@ -57,7 +57,7 @@ uint8_t Key_GetNum(void)
   {
     /* 3 B11 */
     Delay_ms(20);
-    while (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_11) == 1)
+    while (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_11) == 0)
       ;
     Delay_ms(20);
     return 3;

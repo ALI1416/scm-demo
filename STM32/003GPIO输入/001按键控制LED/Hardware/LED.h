@@ -2,7 +2,7 @@
 #define __LED_H
 
 /**
- * @brief  初始化LED A0和A1
+ * @brief  初始化LED(低电平点亮) A0和A1
  */
 void LED_Init(void);
 /**
