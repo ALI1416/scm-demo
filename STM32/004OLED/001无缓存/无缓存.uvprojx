@@ -691,14 +691,19 @@
               <FilePath>..\..\Shared\Driver\OLED.c</FilePath>
             </File>
             <File>
-              <FileName>OLED.Font.h</FileName>
+              <FileName>OLED.Data.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\Shared\Driver\OLED.Font.h</FilePath>
+              <FilePath>..\..\Shared\Driver\OLED.Data.h</FilePath>
             </File>
             <File>
               <FileName>OLED.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Shared\Driver\OLED.h</FilePath>
+            </File>
+            <File>
+              <FileName>OLED.Data.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Shared\Driver\OLED.Data.c</FilePath>
             </File>
           </Files>
         </Group>
