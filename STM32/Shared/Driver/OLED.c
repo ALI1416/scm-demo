@@ -33,7 +33,7 @@ void OLED_Init(uint32_t RCC_APB2Periph,
   OLED_GPIOx_SDA = GPIOx_SDA;
   OLED_GPIO_Pin_SDA = GPIO_Pin_SDA;
   // 延时 等待OLED供电稳定
-  for (uint16_t i = 0; i < 65534; i++)
+  for (uint16_t i = 0; i < 65535; i++)
     ;
   RCC_APB2PeriphClockCmd(RCC_APB2Periph, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -162,7 +162,8 @@ void OLED_SetCursor(uint8_t Row, uint8_t Col)
       0x10 | ((Col & 0xF0) >> 4),
       // 列的低4位
       0x00 | (Col & 0x0F)};
-  OLED_WriteCommand(command, sizeof(command) / sizeof(uint8_t));
+  // OLED_WriteCommand(command, sizeof(command) / sizeof(uint8_t));
+  OLED_WriteCommand(command, 3);
 }
 
 /**

@@ -2,7 +2,6 @@
 #define __OLED_H
 
 #include "stm32f10x.h"
-#include "OLED.Data.h"
 
 /**
  * @brief  初始化OLED(I2C协议)

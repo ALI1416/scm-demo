@@ -700,11 +700,6 @@
               <FileType>5</FileType>
               <FilePath>..\..\Shared\Driver\OLED.h</FilePath>
             </File>
-            <File>
-              <FileName>OLED.Data.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Shared\Driver\OLED.Data.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
