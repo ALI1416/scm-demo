@@ -24,5 +24,47 @@ void OLED_SetCursor(uint8_t Row, uint8_t Col);
  * @brief  清屏
  */
 void OLED_Clear(void);
+/**
+ * @brief  显示字符
+ * @param  Row 行(0~3)
+ * @param  Col 列(0~15)
+ * @param  Char 字符
+ */
+void OLED_ShowChar(uint8_t Row, uint8_t Col, char Char);
+/**
+ * @brief  显示字符串
+ * @param  Row 行(0~3)
+ * @param  Col 列(0~15)
+ * @param  String 字符串
+ */
+void OLED_ShowString(uint8_t Row, uint8_t Col, char *String);
+/**
+ * @brief  显示数字
+ * @param  Row 行(0~3)
+ * @param  Col 列(0~15)
+ * @param  Number 数字(0~4294967295)
+ */
+void OLED_ShowNumber(uint8_t Row, uint8_t Col, uint32_t Number);
+/**
+ * @brief  显示有符号数字
+ * @param  Row 行(0~3)
+ * @param  Col 列(0~15)
+ * @param  Number 有符号数字(-2147483648~2147483647)
+ */
+void OLED_ShowSignedNumber(uint8_t Row, uint8_t Col, int32_t Number);
+/**
+ * @brief  显示十六进制数字(固定8位长度)
+ * @param  Row 行(0~3)
+ * @param  Col 列(0~15)
+ * @param  Number 数字(0x0000 0000~0xFFFF FFFF)
+ */
+void OLED_ShowHexNumber(uint8_t Row, uint8_t Col, uint32_t Number);
+/**
+ * @brief  显示二六进制数字(固定16位长度)
+ * @param  Row 行(0~3)
+ * @param  Col 列(0~15)
+ * @param  Number 数字(0b0000 0000 0000 0000~0b1111 1111 1111 1111)
+ */
+void OLED_ShowBinNumber(uint8_t Row, uint8_t Col, uint16_t Number);
 
 #endif

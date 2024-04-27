@@ -10,6 +10,10 @@ void OLED_I2C_SendByte(uint8_t Byte);
 void OLED_WriteCommand(const uint8_t *Command, uint8_t Length);
 void OLED_WriteData(const uint8_t *Data, uint8_t Length);
 void OLED_WriteByte(uint8_t Type, const uint8_t *Byte, uint8_t Length);
+uint8_t OLED_GetNumberLength(uint32_t Number);
+uint8_t OLED_GetNumberIndexNumber(uint32_t Number, uint8_t Index);
+uint8_t OLED_GetHexNumberIndexNumber(uint32_t Number, uint8_t Index);
+uint8_t OLED_GetBinNumberIndexNumber(uint16_t Number, uint8_t Index);
 
 GPIO_TypeDef *OLED_GPIOx_SCL;
 uint16_t OLED_GPIO_Pin_SCL;
@@ -130,10 +134,10 @@ void OLED_WriteData(const uint8_t *Data, uint8_t Length)
 }
 
 /**
- * @brief  写比特
+ * @brief  写字节
  * @param  Type 类型
- * @param  Data 比特
- * @param Length 比特长度
+ * @param  Data 字节
+ * @param Length 字节长度
  */
 void OLED_WriteByte(uint8_t Type, const uint8_t *Byte, uint8_t Length)
 {
@@ -175,5 +179,326 @@ void OLED_Clear(void)
   {
     OLED_SetCursor(i, 0);
     OLED_WriteData(OLED_ROW_EMPTY, OLED_ROW_EMPTY_LENGTH);
+  }
+}
+
+/**
+ * @brief  显示字符
+ * @param  Row 行(0~3)
+ * @param  Col 列(0~15)
+ * @param  Char 字符
+ */
+void OLED_ShowChar(uint8_t Row, uint8_t Col, char Char)
+{
+  // 上半部分
+  OLED_SetCursor(Row * 2, Col * 8);
+  OLED_WriteData(OLED_FONT[Char][0], 8);
+  // 下半部分
+  OLED_SetCursor(Row * 2 + 1, Col * 8);
+  OLED_WriteData(OLED_FONT[Char][1], 8);
+}
+
+/**
+ * @brief  显示字符串
+ * @param  Row 行(0~3)
+ * @param  Col 列(0~15)
+ * @param  String 字符串
+ */
+void OLED_ShowString(uint8_t Row, uint8_t Col, char *String)
+{
+  for (uint8_t i = 0; String[i] != '\0'; i++)
+  {
+    OLED_ShowChar(Row, Col + i, String[i]);
+  }
+}
+
+/**
+ * @brief  获取数字长度
+ * @param  Number 数字(0~4294967295)
+ * @retval 数字长度
+ */
+uint8_t OLED_GetNumberLength(uint32_t Number)
+{
+  if (Number < 10)
+  {
+    return 1;
+  }
+  else if (Number < 100)
+  {
+    return 2;
+  }
+  else if (Number < 1000)
+  {
+    return 3;
+  }
+  else if (Number < 10000)
+  {
+    return 4;
+  }
+  else if (Number < 100000)
+  {
+    return 5;
+  }
+  else if (Number < 1000000)
+  {
+    return 6;
+  }
+  else if (Number < 10000000)
+  {
+    return 7;
+  }
+  else if (Number < 100000000)
+  {
+    return 8;
+  }
+  else if (Number < 1000000000)
+  {
+    return 9;
+  }
+  else
+  {
+    return 10;
+  }
+}
+
+/**
+ * @brief  获取数字索引位置的数字
+ * @param  Number 数字(0~4294967295)
+ * @param  Index 索引位置(0~9)(低位在前)
+ * @retval 索引位置的数字
+ */
+uint8_t OLED_GetNumberIndexNumber(uint32_t Number, uint8_t Index)
+{
+  if (Index == 0)
+  {
+    return Number % 10;
+  }
+  else if (Index == 1)
+  {
+    return Number / 10 % 10;
+  }
+  else if (Index == 2)
+  {
+    return Number / 100 % 10;
+  }
+  else if (Index == 3)
+  {
+    return Number / 1000 % 10;
+  }
+  else if (Index == 4)
+  {
+    return Number / 10000 % 10;
+  }
+  else if (Index == 5)
+  {
+    return Number / 100000 % 10;
+  }
+  else if (Index == 6)
+  {
+    return Number / 1000000 % 10;
+  }
+  else if (Index == 7)
+  {
+    return Number / 10000000 % 10;
+  }
+  else if (Index == 8)
+  {
+    return Number / 100000000 % 10;
+  }
+  else
+  {
+    return Number / 1000000000 % 10;
+  }
+}
+
+/**
+ * @brief  显示数字
+ * @param  Row 行(0~3)
+ * @param  Col 列(0~15)
+ * @param  Number 数字(0~4294967295)
+ */
+void OLED_ShowNumber(uint8_t Row, uint8_t Col, uint32_t Number)
+{
+  uint8_t Length = OLED_GetNumberLength(Number);
+  for (uint8_t i = 0; i < Length; i++)
+  {
+    OLED_ShowChar(Row, Col + i, OLED_GetNumberIndexNumber(Number, Length - 1 - i) + '0');
+  }
+}
+
+/**
+ * @brief  显示有符号数字(始终显示+-符号)
+ * @param  Row 行(0~3)
+ * @param  Col 列(0~15)
+ * @param  Number 有符号数字(-2147483648~2147483647)
+ */
+void OLED_ShowSignedNumber(uint8_t Row, uint8_t Col, int32_t Number)
+{
+  uint32_t Temp;
+  if (Number < 0)
+  {
+    Temp = -Number;
+    OLED_ShowChar(Row, Col, '-');
+  }
+  else
+  {
+    Temp = Number;
+    OLED_ShowChar(Row, Col, '+');
+  }
+  OLED_ShowNumber(Row, Col + 1, Temp);
+}
+
+/**
+ * @brief  获取十六进制数字索引位置的数字
+ * @param  Number 数字(0x0000 0000~0xFFFF FFFF)
+ * @param  Index 索引位置(0~7)(低位在前)
+ * @retval 索引位置的数字
+ */
+uint8_t OLED_GetHexNumberIndexNumber(uint32_t Number, uint8_t Index)
+{
+  if (Index == 0)
+  {
+    return Number % 16;
+  }
+  else if (Index == 1)
+  {
+    return Number / 0x10 % 16;
+  }
+  else if (Index == 2)
+  {
+    return Number / 0x100 % 16;
+  }
+  else if (Index == 3)
+  {
+    return Number / 0x1000 % 16;
+  }
+  else if (Index == 4)
+  {
+    return Number / 0x10000 % 16;
+  }
+  else if (Index == 5)
+  {
+    return Number / 0x100000 % 16;
+  }
+  else if (Index == 6)
+  {
+    return Number / 0x1000000 % 16;
+  }
+  else
+  {
+    return Number / 0x10000000 % 16;
+  }
+}
+
+/**
+ * @brief  显示十六进制数字(固定8位长度)
+ * @param  Row 行(0~3)
+ * @param  Col 列(0~15)
+ * @param  Number 数字(0x0000 0000~0xFFFF FFFF)
+ */
+void OLED_ShowHexNumber(uint8_t Row, uint8_t Col, uint32_t Number)
+{
+  uint8_t hexNumber;
+  uint8_t hexChar;
+  for (uint8_t i = 0; i < 8; i++)
+  {
+    hexNumber = OLED_GetHexNumberIndexNumber(Number, 7 - i);
+    if (hexNumber < 10)
+    {
+      hexChar = hexNumber + '0';
+    }
+    else
+    {
+      hexChar = hexNumber - 10 + 'A';
+    }
+    OLED_ShowChar(Row, Col + i, hexChar);
+  }
+}
+
+/**
+ * @brief  获取二进制数字索引位置的数字
+ * @param  Number 数字(0b0000 0000 0000 0000~0b1111 1111 1111 1111)
+ * @param  Index 索引位置(0~15)(低位在前)
+ * @retval 索引位置的数字
+ */
+uint8_t OLED_GetBinNumberIndexNumber(uint16_t Number, uint8_t Index)
+{
+  if (Index == 0)
+  {
+    return Number % 2;
+  }
+  else if (Index == 1)
+  {
+    return Number / 2 % 2;
+  }
+  else if (Index == 2)
+  {
+    return Number / 4 % 2;
+  }
+  else if (Index == 3)
+  {
+    return Number / 8 % 2;
+  }
+  else if (Index == 4)
+  {
+    return Number / 16 % 2;
+  }
+  else if (Index == 5)
+  {
+    return Number / 32 % 2;
+  }
+  else if (Index == 6)
+  {
+    return Number / 64 % 2;
+  }
+  else if (Index == 7)
+  {
+    return Number / 128 % 2;
+  }
+  else if (Index == 8)
+  {
+    return Number / 256 % 2;
+  }
+  else if (Index == 9)
+  {
+    return Number / 512 % 2;
+  }
+  else if (Index == 10)
+  {
+    return Number / 1024 % 2;
+  }
+  else if (Index == 11)
+  {
+    return Number / 2048 % 2;
+  }
+  else if (Index == 12)
+  {
+    return Number / 4096 % 2;
+  }
+  else if (Index == 13)
+  {
+    return Number / 8192 % 2;
+  }
+  else if (Index == 14)
+  {
+    return Number / 16384 % 2;
+  }
+  else
+  {
+    return Number / 32768 % 2;
+  }
+}
+
+/**
+ * @brief  显示二六进制数字(固定16位长度)
+ * @param  Row 行(0~3)
+ * @param  Col 列(0~15)
+ * @param  Number 数字(0b0000 0000 0000 0000~0b1111 1111 1111 1111)
+ */
+void OLED_ShowBinNumber(uint8_t Row, uint8_t Col, uint16_t Number)
+{
+  for (uint8_t i = 0; i < 16; i++)
+  {
+    OLED_ShowChar(Row, Col + i, OLED_GetBinNumberIndexNumber(Number, 15 - i) + '0');
   }
 }
