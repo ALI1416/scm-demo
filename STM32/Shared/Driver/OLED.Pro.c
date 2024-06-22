@@ -1,6 +1,6 @@
 #include "stm32f10x.h"
-#include "OLED.h"
-#include "OLED.Data.h"
+#include "OLED.Pro.h"
+#include "OLED.Pro.Data.h"
 
 void OLED_I2C_SCL(uint8_t BitVal);
 void OLED_I2C_SDA(uint8_t BitVal);
@@ -26,14 +26,18 @@ uint16_t OLED_GPIO_Pin_SDA;
  */
 #define OLED_PAGE_LENGTH 8
 /**
- * OLED列长度
+ * OLED Y长度
  */
-#define OLED_COL_LENGTH 128
+#define OLED_Y_LENGTH OLED_PAGE_LENGTH * 8
+/**
+ * OLED X长度
+ */
+#define OLED_X_LENGTH 128
 
 /**
- * OLED空行
+ * OLED显存数组
  */
-const uint8_t OLED_ROW_EMPTY[OLED_COL_LENGTH];
+uint8_t OLED_Buffer[OLED_PAGE_LENGTH][OLED_X_LENGTH];
 
 /**
  * @brief  初始化OLED(I2C协议)
@@ -66,6 +70,7 @@ void OLED_Init(uint32_t RCC_APB2Periph,
   OLED_I2C_SDA(1);
   OLED_WriteCommand(OLED_INIT_COMMAND, OLED_INIT_COMMAND_LENGTH);
   OLED_Clear();
+  OLED_Update();
 }
 
 /**
@@ -186,44 +191,184 @@ void OLED_SetCursor(uint8_t Page, uint8_t Col)
 }
 
 /**
+ * @brief  更新
+ */
+void OLED_Update(void)
+{
+  for (uint8_t i = 0; i < OLED_PAGE_LENGTH; i++)
+  {
+    OLED_SetCursor(i, 0);
+    OLED_WriteData(OLED_Buffer[i], OLED_X_LENGTH);
+  }
+}
+
+/**
+ * @brief  更新指定区域
+ * @param  X X坐标(0~127)
+ * @param  Y Y坐标(0~63)
+ * @param  Width 宽(0~128)
+ * @param  Height 高(0~64)
+ */
+void OLED_UpdateArea(uint8_t X, uint8_t Y, uint8_t Width, uint8_t Height)
+{
+  // 防止越界
+  if (X + Width > OLED_X_LENGTH)
+  {
+    Width = OLED_X_LENGTH - X;
+  }
+  if (Y + Height > OLED_Y_LENGTH)
+  {
+    Height = OLED_Y_LENGTH - Y;
+  }
+  // 更新指定区域
+  for (uint8_t i = Y / 8; i < (Y + Height - 1) / 8 + 1; i++)
+  {
+    OLED_SetCursor(i, X);
+    OLED_WriteData(&OLED_Buffer[i][X], Width);
+  }
+}
+
+/**
  * @brief  清屏
  */
 void OLED_Clear(void)
 {
   for (uint8_t i = 0; i < OLED_PAGE_LENGTH; i++)
   {
-    OLED_SetCursor(i, 0);
-    OLED_WriteData(OLED_ROW_EMPTY, OLED_COL_LENGTH);
+    for (uint8_t j = 0; j < OLED_X_LENGTH; j++)
+    {
+      OLED_Buffer[i][j] = 0x00;
+    }
+  }
+}
+
+/**
+ * @brief  清屏指定区域
+ * @param  X X坐标(0~127)
+ * @param  Y Y坐标(0~63)
+ * @param  Width 宽(0~128)
+ * @param  Height 高(0~64)
+ */
+void OLED_ClearArea(uint8_t X, uint8_t Y, uint8_t Width, uint8_t Height)
+{
+  // 防止越界
+  if (X + Width > OLED_X_LENGTH)
+  {
+    Width = OLED_X_LENGTH - X;
+  }
+  if (Y + Height > OLED_Y_LENGTH)
+  {
+    Height = OLED_Y_LENGTH - Y;
+  }
+  // 清屏指定区域
+  for (uint8_t i = Y; i < Y + Height; i++)
+  {
+    for (uint8_t j = X; j < X + Width; j++)
+    {
+      OLED_Buffer[i / 8][j] &= ~(0x01 << (i % 8));
+    }
+  }
+}
+
+/**
+ * 反转
+ */
+void OLED_Reverse(void)
+{
+  for (uint8_t i = 0; i < OLED_PAGE_LENGTH; i++)
+  {
+    for (uint8_t j = 0; j < OLED_X_LENGTH; j++)
+    {
+      OLED_Buffer[i][j] ^= 0xFF;
+    }
+  }
+}
+
+/**
+ * @brief  反转指定区域
+ * @param  X X坐标(0~127)
+ * @param  Y Y坐标(0~63)
+ * @param  Width 宽(0~128)
+ * @param  Height 高(0~64)
+ */
+void OLED_ReverseArea(uint8_t X, uint8_t Y, uint8_t Width, uint8_t Height)
+{
+  // 防止越界
+  if (X + Width > OLED_X_LENGTH)
+  {
+    Width = OLED_X_LENGTH - X;
+  }
+  if (Y + Height > OLED_Y_LENGTH)
+  {
+    Height = OLED_Y_LENGTH - Y;
+  }
+  // 反转指定区域
+  for (uint8_t i = Y; i < Y + Height; i++)
+  {
+    for (uint8_t j = X; j < X + Width; j++)
+    {
+      OLED_Buffer[i / 8][j] ^= 0x01 << (i % 8);
+    }
+  }
+}
+
+/**
+ * @brief  显示图像
+ * @param  X X坐标(0~127)
+ * @param  Y Y坐标(0~63)
+ * @param  Width 宽(0~128)
+ * @param  Height 高(0~64)
+ * @param  Image 图像
+ */
+void OLED_ShowImage(uint8_t X, uint8_t Y, uint8_t Width, uint8_t Height, const uint8_t *Image)
+{
+  // 清屏指定区域
+  OLED_ClearArea(X, Y, Width, Height);
+  // 显示图像
+  for (uint8_t i = 0; i < (Height - 1) / 8 + 1; i++)
+  {
+    for (uint8_t j = 0; j < Width; j++)
+    {
+      if (X + j > 127)
+      {
+        break;
+      }
+      if (Y / 8 + i > 7)
+      {
+        return;
+      }
+      OLED_Buffer[Y / 8 + i][X + j] |= Image[i * Width + j] << (Y % 8);
+      if (Y / 8 + i + 1 > 7)
+      {
+        continue;
+      }
+      OLED_Buffer[Y / 8 + i + 1][X + j] |= Image[i * Width + j] >> (8 - Y % 8);
+    }
   }
 }
 
 /**
  * @brief  显示字符
- * @param  Row 行(0~3)
- * @param  Col 列(0~15)
+ * @param  X X坐标(0~127)
+ * @param  Y Y坐标(0~63)
  * @param  Char 字符
  */
-void OLED_ShowChar(uint8_t Row, uint8_t Col, char Char)
+void OLED_ShowChar(uint8_t X, uint8_t Y, char Char)
 {
-  // 上半部分
-  OLED_SetCursor(Row * 2, Col * 8);
-  OLED_WriteData(OLED_FONT[Char][0], 8);
-  // 下半部分
-  OLED_SetCursor(Row * 2 + 1, Col * 8);
-  OLED_WriteData(OLED_FONT[Char][1], 8);
+  OLED_ShowImage(X, Y, 8, 16, OLED_FONT[Char]);
 }
 
 /**
  * @brief  显示字符串
- * @param  Row 行(0~3)
- * @param  Col 列(0~15)
+ * @param  X X坐标(0~127)
+ * @param  Y Y坐标(0~63)
  * @param  String 字符串
  */
-void OLED_ShowString(uint8_t Row, uint8_t Col, char *String)
+void OLED_ShowString(uint8_t X, uint8_t Y, char *String)
 {
   for (uint8_t i = 0; String[i] != '\0'; i++)
   {
-    OLED_ShowChar(Row, Col + i, String[i]);
+    OLED_ShowChar(X + i * 8, Y, String[i]);
   }
 }
 
@@ -328,39 +473,39 @@ uint8_t OLED_GetNumberIndexNumber(uint32_t Number, uint8_t Index)
 
 /**
  * @brief  显示数字
- * @param  Row 行(0~3)
- * @param  Col 列(0~15)
+ * @param  X X坐标(0~127)
+ * @param  Y Y坐标(0~63)
  * @param  Number 数字(0~4294967295)
  */
-void OLED_ShowNumber(uint8_t Row, uint8_t Col, uint32_t Number)
+void OLED_ShowNumber(uint8_t X, uint8_t Y, uint32_t Number)
 {
   uint8_t length = OLED_GetNumberLength(Number);
   for (uint8_t i = 0; i < length; i++)
   {
-    OLED_ShowChar(Row, Col + i, OLED_GetNumberIndexNumber(Number, length - 1 - i) + '0');
+    OLED_ShowChar(X + i * 8, Y, OLED_GetNumberIndexNumber(Number, length - 1 - i) + '0');
   }
 }
 
 /**
  * @brief  显示有符号数字(始终显示+-符号)
- * @param  Row 行(0~3)
- * @param  Col 列(0~15)
+ * @param  X X坐标(0~127)
+ * @param  Y Y坐标(0~63)
  * @param  Number 有符号数字(-2147483648~2147483647)
  */
-void OLED_ShowSignedNumber(uint8_t Row, uint8_t Col, int32_t Number)
+void OLED_ShowSignedNumber(uint8_t X, uint8_t Y, int32_t Number)
 {
   uint32_t temp;
   if (Number < 0)
   {
     temp = -Number;
-    OLED_ShowChar(Row, Col, '-');
+    OLED_ShowChar(X, Y, '-');
   }
   else
   {
     temp = Number;
-    OLED_ShowChar(Row, Col, '+');
+    OLED_ShowChar(X, Y, '+');
   }
-  OLED_ShowNumber(Row, Col + 1, temp);
+  OLED_ShowNumber(X + 8, Y, temp);
 }
 
 /**
@@ -407,11 +552,11 @@ uint8_t OLED_GetHexNumberIndexNumber(uint32_t Number, uint8_t Index)
 
 /**
  * @brief  显示十六进制数字(固定8位长度)
- * @param  Row 行(0~3)
- * @param  Col 列(0~15)
+ * @param  X X坐标(0~127)
+ * @param  Y Y坐标(0~63)
  * @param  Number 数字(0x0000 0000~0xFFFF FFFF)
  */
-void OLED_ShowHexNumber(uint8_t Row, uint8_t Col, uint32_t Number)
+void OLED_ShowHexNumber(uint8_t X, uint8_t Y, uint32_t Number)
 {
   uint8_t hexNumber;
   uint8_t hexChar;
@@ -426,7 +571,7 @@ void OLED_ShowHexNumber(uint8_t Row, uint8_t Col, uint32_t Number)
     {
       hexChar = hexNumber - 10 + 'A';
     }
-    OLED_ShowChar(Row, Col + i, hexChar);
+    OLED_ShowChar(X + i * 8, Y, hexChar);
   }
 }
 
@@ -506,14 +651,14 @@ uint8_t OLED_GetBinNumberIndexNumber(uint16_t Number, uint8_t Index)
 
 /**
  * @brief  显示二六进制数字(固定16位长度)
- * @param  Row 行(0~3)
- * @param  Col 列(0~15)
+ * @param  X X坐标(0~127)
+ * @param  Y Y坐标(0~63)
  * @param  Number 数字(0b0000 0000 0000 0000~0b1111 1111 1111 1111)
  */
-void OLED_ShowBinNumber(uint8_t Row, uint8_t Col, uint16_t Number)
+void OLED_ShowBinNumber(uint8_t X, uint8_t Y, uint16_t Number)
 {
   for (uint8_t i = 0; i < 16; i++)
   {
-    OLED_ShowChar(Row, Col + i, OLED_GetBinNumberIndexNumber(Number, 15 - i) + '0');
+    OLED_ShowChar(X + i * 8, Y, OLED_GetBinNumberIndexNumber(Number, 15 - i) + '0');
   }
 }

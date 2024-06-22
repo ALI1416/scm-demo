@@ -1,5 +1,5 @@
-#ifndef __OLED_DATA_H
-#define __OLED_DATA_H
+#ifndef __OLED_PRO_DATA_H
+#define __OLED_PRO_DATA_H
 
 #include "stm32f10x.h"
 
@@ -55,7 +55,7 @@ const uint8_t OLED_INIT_COMMAND[23] = {
 /**
  * OLED ASCII字符字体(8x16)
  */
-const uint8_t OLED_FONT[128][2][8] =
+const uint8_t OLED_FONT[128][16] =
     {
         // (NUL)
         0x00,

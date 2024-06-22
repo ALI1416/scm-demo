@@ -15,12 +15,6 @@ void OLED_Init(uint32_t RCC_APB2Periph,
                GPIO_TypeDef *GPIOx_SCL, uint16_t GPIO_Pin_SCL,
                GPIO_TypeDef *GPIOx_SDA, uint16_t GPIO_Pin_SDA);
 /**
- * @brief  设置光标坐标
- * @param  Row 行(0~7)
- * @param  Col 列(0~127)
- */
-void OLED_SetCursor(uint8_t Row, uint8_t Col);
-/**
  * @brief  清屏
  */
 void OLED_Clear(void);
