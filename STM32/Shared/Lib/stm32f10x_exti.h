@@ -82,7 +82,7 @@ typedef struct
                                          This parameter can be a value of @ref EXTIMode_TypeDef */
 
   EXTITrigger_TypeDef EXTI_Trigger; /*!< Specifies the trigger signal active edge for the EXTI lines.
-                                         This parameter can be a value of @ref EXTIMode_TypeDef */
+                                         This parameter can be a value of @ref EXTITrigger_TypeDef */
 
   FunctionalState EXTI_LineCmd;     /*!< Specifies the new state of the selected EXTI lines.
                                          This parameter can be set either to ENABLE or DISABLE */ 
