@@ -81,12 +81,28 @@ void OLED_ShowString(uint8_t X, uint8_t Y, char *String);
  */
 void OLED_ShowNumber(uint8_t X, uint8_t Y, uint32_t Number);
 /**
- * @brief  显示有符号数字(始终显示+-符号)
+ * @brief  显示固定长度数字(长度过大前面补0、长度过小尾部截断)
+ * @param  X X坐标(0~127)
+ * @param  Y Y坐标(0~63)
+ * @param  Number 数字(0~4294967295)
+ * @param  Length 长度(1-16)
+ */
+void OLED_ShowFixedNumber(uint8_t Row, uint8_t Col, uint32_t Number, uint8_t Length);
+/**
+ * @brief  显示有符号数字(始终显示+-号、数字0显示+号)
  * @param  X X坐标(0~127)
  * @param  Y Y坐标(0~63)
  * @param  Number 有符号数字(-2147483648~2147483647)
  */
 void OLED_ShowSignedNumber(uint8_t X, uint8_t Y, int32_t Number);
+/**
+ * @brief  显示固定长度有符号数字(始终显示+-号、数字0显示+号、长度含符号、长度过大前面补0、长度过小尾部截断、长度为1只显示+-号)
+ * @param  X X坐标(0~127)
+ * @param  Y Y坐标(0~63)
+ * @param  Number 有符号数字(-2147483648~2147483647)
+ * @param  Length 长度(1-16)
+ */
+void OLED_ShowFixedSignedNumber(uint8_t Row, uint8_t Col, int32_t Number, uint8_t Length);
 /**
  * @brief  显示十六进制数字(固定8位长度)
  * @param  X X坐标(0~127)
