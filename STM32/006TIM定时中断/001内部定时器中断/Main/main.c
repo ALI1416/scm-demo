@@ -1,6 +1,6 @@
 #include "stm32f10x.h"
 #include "OLED.h"
-#include "InfraredSensor.h"
+#include "Timer2.h"
 
 uint32_t count = 0;
 
@@ -13,72 +13,15 @@ uint32_t count = 0;
 int main()
 {
   OLED_Init(RCC_APB2Periph_GPIOB, GPIOB, GPIO_Pin_11, GPIOB, GPIO_Pin_10);
-  // 1、开启RCC内部时钟
-  // 在stm32f10x_tim文件里
-  // TIM_DeInit恢复默认配置
-  // TIM_TimeBaseInit初始化时基单元
-  // TIM_TimeBaseStructInit通过结构体初始化时基单元
-  // TIM_Cmd使能计数器
-  // TIM_ITConfig使能中断输出信号
-  // TIM_InternalClockConfig内部时钟
-  // TIM_ITRxExternalClockConfig选择ITRx其他定时器时钟
-  // TIM_TIxExternalClockConfig选择TIx捕获通道时钟
-  // TIM_ETRClockMode1Config选择ETR通过外部时钟模式1输入的时钟
-  // TIM_ETRClockMode2Config选择ETR通过外部时钟模式2输入的时钟
-  // TIM_ETRConfig配置ETR引脚参数
-  // TIM_PrescalerConfig配置预分频配置
-  // TIM_CounterModeConfig配置计数器的计数模式
-  // TIM_ARRPreloadConfig配置自动重装器预装功能
-  // TIM_SetCounter修改计数器的值
-  // TIM_SetAutoreload修改自动重装器的值
-  // TIM_GetCounter获取计数器的值
-  // TIM_GetPrescaler获取预分频器的值
-  // TIM_GetFlagStatus和TIM_GetITStatus(中断函数内部使用)获取标志位是否被置SET
-  // TIM_ClearFlag和TIM_ClearITPendingBit(中断函数内部使用)对置SET的标志位进行清除
-  // 初始化TIM2通用定时器
-  RCC_APB1PeriphClockCmd(RCC_APB2Periph_TIM2, ENABLE);
-  // 2、选择内部时钟源(默认使用内部时钟，可以不写)
-  TIM_InternalClockConfig(TIM2);
-  // 3、配置时基单元
-  TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
-  // 时钟分频(不分频)
-  TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-  // 计数器模式
-  // TIM_CounterMode_Up(向上计数)
-  // TIM_CounterMode_Down(向下计数)
-  // TIM_CounterMode_CenterAligned1、TIM_CounterMode_CenterAligned2、TIM_CounterMode_CenterAligned3(中央对齐)
-  TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  // 预分频器的值
-  TIM_TimeBaseInitStructure.TIM_Prescaler = 7200 - 1;
-  // 自动重装器的值
-  TIM_TimeBaseInitStructure.TIM_Period = 10000 - 1;
-  // 重复计数器的值(高级定时器才有)
-  TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
-  TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStructure);
-  // TIM_TimeBaseInit函数的最后，手动生成了更新事件，会进入更新中断
-  // 清除更新中断标志位，防止立即进入中断
-  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-  // 4、配置输出中断配置，允许更新中断输出到NVIC
-  TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-  // 5、配置NVIC，打开定时器中断通道，分配优先级
-  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-  NVIC_InitTypeDef NVIC_InitStructure;
-  // 定时器2通道
-  NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
-  NVIC_Init(&NVIC_InitStructure);
-  // 6、运行控制(开启计数器)
-  TIM_Cmd(TIM2, ENABLE);
+  Timer2_Init(7200 - 1, 10000 - 9, NVIC_PriorityGroup_2, 1, 1);
   while (1)
   {
-    OLED_ShowNumber(0, 0, count);
-    OLED_ShowNumber(1, 0, TIM_GetCounter(TIM2));
+    OLED_ShowFixedNumber(0, 0, count, 3);
+    OLED_ShowFixedNumber(1, 0, TIM_GetCounter(TIM2), 5);
   }
 }
 
-// 5、执行中断程序
+// 执行中断程序
 // 在startup_stm32f10x_md文件中存在TIM2_IRQHandler中断函数
 void TIM2_IRQHandler(void)
 {

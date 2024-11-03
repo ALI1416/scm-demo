@@ -29,8 +29,12 @@ int main()
     /* 3 */
     OLED_ShowString(0, 0, "!@#$%^&*()_+-=[]");
     OLED_ShowString(1, 0, " {}\\|;:'\"<>,.?/ ");
+    OLED_ShowString(2, 0, "                ");
     OLED_ShowString(3, 0, "                ");
-    OLED_ShowString(4, 0, "                ");
+    OLED_ShowFixedNumber(2, 0, 12345, 8);
+    OLED_ShowFixedNumber(2, 9, 12345, 4);
+    OLED_ShowFixedSignedNumber(3, 0, 1234, 8);
+    OLED_ShowFixedSignedNumber(3, 9, -1234, 5);
     Delay_s(5);
   }
 }

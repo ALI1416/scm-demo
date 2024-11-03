@@ -53,6 +53,12 @@ int main()
     OLED_ShowString(0, 16, " {}\\|;:'\"<>,.?/ ");
     OLED_Update();
     Delay_s(1);
+    OLED_ShowFixedNumber(0, 32, 12345, 8);
+    OLED_ShowFixedNumber(72, 32, 12345, 4);
+    OLED_ShowFixedSignedNumber(0, 48, 1234, 8);
+    OLED_ShowFixedSignedNumber(72, 48, -1234, 5);
+    OLED_Update();
+    Delay_s(1);
     OLED_ReverseArea(0, 0, 128, 32);
     OLED_UpdateArea(0, 0, 128, 32);
     Delay_s(1);

@@ -936,8 +936,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Shared\Driver\InfraredSensor.c</PathWithFileName>
-      <FilenameWithoutPath>InfraredSensor.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\Shared\Driver\Timer2.c</PathWithFileName>
+      <FilenameWithoutPath>Timer2.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -948,8 +948,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Shared\Driver\InfraredSensor.h</PathWithFileName>
-      <FilenameWithoutPath>InfraredSensor.h</FilenameWithoutPath>
+      <PathWithFileName>..\..\Shared\Driver\Timer2.h</PathWithFileName>
+      <FilenameWithoutPath>Timer2.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

@@ -342,7 +342,7 @@ void OLED_ShowNumber(uint8_t Row, uint8_t Col, uint32_t Number)
 }
 
 /**
- * @brief  显示固定长度数字(长度过大前面补0、长度过小尾部截断)
+ * @brief  显示固定长度数字(长度过大前面补0、长度过小头部截断)
  * @param  Row 行(0~3)
  * @param  Col 列(0~15)
  * @param  Number 数字(0~4294967295)
@@ -362,7 +362,7 @@ void OLED_ShowFixedNumber(uint8_t Row, uint8_t Col, uint32_t Number, uint8_t Len
   }
   for (; i < Length; i++)
   {
-    OLED_ShowChar(Row, Col + i, OLED_GetNumberIndexNumber(Number, length - 1 - i) + '0');
+    OLED_ShowChar(Row, Col + i, OLED_GetNumberIndexNumber(Number, Length - 1 - i) + '0');
   }
 }
 
@@ -389,7 +389,7 @@ void OLED_ShowSignedNumber(uint8_t Row, uint8_t Col, int32_t Number)
 }
 
 /**
- * @brief  显示固定长度有符号数字(始终显示+-号、数字0显示+号、长度含符号、长度过大前面补0、长度过小尾部截断、长度为1只显示+-号)
+ * @brief  显示固定长度有符号数字(始终显示+-号、数字0显示+号、长度含符号、长度过大前面补0、长度过小头部截断、长度为1只显示+-号)
  * @param  Row 行(0~3)
  * @param  Col 列(0~15)
  * @param  Number 有符号数字(-2147483648~2147483647)

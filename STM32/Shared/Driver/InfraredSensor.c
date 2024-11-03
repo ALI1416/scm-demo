@@ -2,6 +2,7 @@
 
 /**
  * @brief  初始化红外传感器
+ * 被遮挡/距离过近触发
  * @param RCC_APB2Periph 外设组
  * @param GPIOx 外设名
  * @param GPIO_Pin 外设针脚
@@ -93,3 +94,16 @@ void InfraredSensor_Init_NVIC(uint8_t NVIC_IRQChannel, uint32_t NVIC_PriorityGro
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = NVIC_IRQChannelSubPriority;
   NVIC_Init(&NVIC_InitStructure);
 }
+
+// 执行中断程序
+// 接B12在startup_stm32f10x_md文件中存在EXTI15_10_IRQHandler中断函数
+// void EXTI15_10_IRQHandler(void)
+// {
+//   // 判断是否为指定中断线进来的中断
+//   if (EXTI_GetITStatus(EXTI_Line12) == SET)
+//   {
+//     /* 执行代码 */
+//     // 清除中断标志位
+//     EXTI_ClearITPendingBit(EXTI_Line12);
+//   }
+// }

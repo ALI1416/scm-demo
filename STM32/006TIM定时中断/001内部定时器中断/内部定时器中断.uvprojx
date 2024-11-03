@@ -681,14 +681,14 @@
               <FilePath>..\..\Shared\Driver\OLED.h</FilePath>
             </File>
             <File>
-              <FileName>InfraredSensor.c</FileName>
+              <FileName>Timer2.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Shared\Driver\InfraredSensor.c</FilePath>
+              <FilePath>..\..\Shared\Driver\Timer2.c</FilePath>
             </File>
             <File>
-              <FileName>InfraredSensor.h</FileName>
+              <FileName>Timer2.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\Shared\Driver\InfraredSensor.h</FilePath>
+              <FilePath>..\..\Shared\Driver\Timer2.h</FilePath>
             </File>
           </Files>
         </Group>
