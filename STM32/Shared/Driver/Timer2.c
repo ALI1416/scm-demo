@@ -1,5 +1,8 @@
 #include "stm32f10x.h"
 
+// CNT计数器从0开始每次+1，数值到ARR自动重装器的值时，ARR+1，CNT清零
+// ARR到PSC预分频器的值时，ARR清零，产生中断
+
 /**
  * @brief  初始化定时器2(内部时钟)
  * CK_CNT_OV=CK_CNT/(ARR+1)=CK_PSC/(PSC+1)/(ARR+1)
