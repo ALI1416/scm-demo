@@ -5,15 +5,15 @@
 uint32_t count = 0;
 
 /**
- * 内部定时器中断
- * CK_CNT_OV=CK_CNT/(ARR+1)=CK_PSC/(PSC+1)/(ARR+1)
- * 定时频率=时钟频率/(预分频器的值+1)/(自动重装器的值+1)
- * 定时1s=1hz=72MHz/(7200)/(10000)
+ * 定时器外部时钟
+ * 对射式红外传感器接B12
+ * 每次CNT+1
+ * 每10次NUM+1
  */
 int main()
 {
   OLED_Init(RCC_APB2Periph_GPIOB, GPIOB, GPIO_Pin_11, GPIOB, GPIO_Pin_10);
-  Timer2_Init(7200 - 1, 10000 - 1, NVIC_PriorityGroup_2, 1, 1);
+  Timer2_External_Init(RCC_APB2Periph_GPIOB, GPIOB, GPIO_Pin_12, 10 - 1, 1 - 1, NVIC_PriorityGroup_2, 1, 1);
   while (1)
   {
     OLED_ShowFixedNumber(0, 0, count, 3);

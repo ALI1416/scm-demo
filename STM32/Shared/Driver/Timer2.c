@@ -1,7 +1,7 @@
 #include "stm32f10x.h"
 
 /**
- * @brief  初始化定时器2
+ * @brief  初始化定时器2(内部时钟)
  * CK_CNT_OV=CK_CNT/(ARR+1)=CK_PSC/(PSC+1)/(ARR+1)
  * 定时频率=时钟频率/(预分频器的值+1)/(自动重装器的值+1)
  * 定时1s=1hz=72MHz/(7200)/(10000)
@@ -70,6 +70,58 @@ void Timer2_Init(uint16_t TIM_Prescaler, uint16_t TIM_Period, uint32_t NVIC_Prio
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = NVIC_IRQChannelSubPriority;
   NVIC_Init(&NVIC_InitStructure);
   // 6、运行控制(开启计数器)
+  TIM_Cmd(TIM2, ENABLE);
+}
+
+/**
+ * @brief  初始化定时器2(外部时钟)
+ * CK_CNT_OV=CK_CNT/(ARR+1)=CK_PSC/(PSC+1)/(ARR+1)
+ * 定时频率=时钟频率/(预分频器的值+1)/(自动重装器的值+1)
+ * 定时1s=1hz=72MHz/(7200)/(10000)
+ * @param RCC_APB2Periph 外部时钟的外设组
+ * @param GPIOx 外部时钟的外设名
+ * @param GPIO_Pin 外部时钟的外设针脚
+ * @param TIM_Prescaler 预分频器(PSC)的值
+ * @param TIM_Period 自动重装器(ARR)的值
+ * @param NVIC_PriorityGroup 中断分组(0 ~ 4)
+ * @param NVIC_IRQChannelPreemptionPriority 抢占优先级(0 ~ 15)
+ * @param NVIC_IRQChannelSubPriority 响应优先级(0 ~ 15)
+ */
+void Timer2_External_Init(uint32_t RCC_APB2Periph, GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, uint16_t TIM_Prescaler, uint16_t TIM_Period, uint32_t NVIC_PriorityGroup, uint8_t NVIC_IRQChannelPreemptionPriority, uint8_t NVIC_IRQChannelSubPriority)
+{
+  // 开启外部时钟的外设时钟
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph, ENABLE);
+  GPIO_InitTypeDef GPIO_InitStructure;
+  // 官方推荐浮空输入，但是不建议
+  // 可以使用上拉输入
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_IPU;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOx, &GPIO_InitStructure);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+  // 选择ETR通过外部时钟模式2输入的时钟
+  // TIM_ExtTRGPrescaler外部触发预分频器 TIM_ExtTRGPSC_OFF不需要分频
+  // TIM_ExtTRGPolarity外部触发极性
+  // TIM_ExtTRGPolarity_Inverted反向：低电平或下降沿有效
+  // TIM_ExtTRGPolarity_NonInverted不反向：高电平或上升沿有效
+  // ExtTRGFilter外部触发滤波器 0x00不需要
+  TIM_ETRClockMode2Config(TIM2, TIM_ExtTRGPSC_OFF, TIM_ExtTRGPolarity_NonInverted, 0x00);
+  TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
+  TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseInitStructure.TIM_Prescaler = TIM_Prescaler;
+  TIM_TimeBaseInitStructure.TIM_Period = TIM_Period;
+  TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
+  TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStructure);
+  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+  TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+  NVIC_PriorityGroupConfig(NVIC_PriorityGroup);
+  NVIC_InitTypeDef NVIC_InitStructure;
+  NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = NVIC_IRQChannelPreemptionPriority;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = NVIC_IRQChannelSubPriority;
+  NVIC_Init(&NVIC_InitStructure);
   TIM_Cmd(TIM2, ENABLE);
 }
 
