@@ -50,7 +50,7 @@ void InfraredSensor_Init_EXTI(uint32_t EXTI_Line, EXTITrigger_TypeDef EXTI_Trigg
   // 位于stm32f10x_exti文件里
   // EXTI_DeInit复位EXTI配置
   // EXTI_Init初始化EXTI
-  // EXTI_StructInit通过结构体初始化EXTI
+  // EXTI_StructInit给EXTI结构体默认值
   // EXTI_GenerateSWInterrupt软件触发外部中断
   // EXTI_GetFlagStatus和EXTI_GetITStatus(中断函数内部使用)获取标志位是否被置SET
   // EXTI_ClearFlag和EXTI_ClearITPendingBit(中断函数内部使用)对置SET的标志位进行清除

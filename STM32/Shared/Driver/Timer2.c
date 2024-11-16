@@ -20,7 +20,7 @@ void Timer2_Init(uint16_t TIM_Prescaler, uint16_t TIM_Period, uint32_t NVIC_Prio
   // 在stm32f10x_tim文件里
   // TIM_DeInit恢复默认配置
   // TIM_TimeBaseInit初始化时基单元
-  // TIM_TimeBaseStructInit通过结构体初始化时基单元
+  // TIM_TimeBaseStructInit给时基单元结构体默认值
   // TIM_Cmd使能计数器
   // TIM_ITConfig使能中断输出信号
   // TIM_InternalClockConfig内部时钟
@@ -75,6 +75,7 @@ void Timer2_Init(uint16_t TIM_Prescaler, uint16_t TIM_Period, uint32_t NVIC_Prio
   // 6、运行控制(开启计数器)
   TIM_Cmd(TIM2, ENABLE);
 }
+
 /**
  * @brief  初始化定时器2(外部时钟只能接在A0上)
  * CK_CNT_OV=CK_CNT/(ARR+1)=CK_PSC/(PSC+1)/(ARR+1)
