@@ -1,4 +1,5 @@
 #include "stm32f10x.h"
+#include "OLED.h"
 #include "Delay.h"
 #include "PWM.h"
 
@@ -18,11 +19,13 @@ int main()
     for (uint8_t i = 0; i < 100; i++)
     {
       TIM_SetCompare1(TIM2, i);
+      OLED_ShowFixedNumber(0, 0, i, 3);
       Delay_ms(10);
     }
-    for (uint8_t i = 0; i < 100; i++)
+    for (uint8_t i = 100; i > 0; i--)
     {
-      TIM_SetCompare1(TIM2, 100 - i);
+      TIM_SetCompare1(TIM2, i);
+      OLED_ShowFixedNumber(0, 0, i, 3);
       Delay_ms(10);
     }
   }

@@ -1,12 +1,12 @@
 #include "stm32f10x.h"
 
 /**
- * @brief  初始化PWM在PA0口
+ * @brief  初始化PWM在PA0口(定时器2通道1)
  * PWM频率=CK_PSC/(PSC+1)/(ARR+1)
  * PWM占空比(高电平所占比例)=CCR/(ARR+1)
  * PWM分辨率(调节精度)=1/(ARR+1)
  * 频率1kHz 占空比50% 分辨率1%
- * 72M/(PSC+1)/(ARR+1)=1000 --> PSC=720
+ * 72M/(PSC+1)/(ARR+1)=1000 --> PSC+1=720
  * CCR/(ARR+1)=50% --> CCR=50
  * 1/(ARR+1)=1% --> ARR+1=100
  * @param TIM_Prescaler 预分频器(PSC)的值
@@ -75,12 +75,12 @@ void PWM_Init_PA0(uint16_t TIM_Prescaler, uint16_t TIM_Period, uint16_t TIM_Puls
 }
 
 /**
- * @brief  初始化PWM在PA15口
+ * @brief  初始化PWM在PA15口(定时器2通道1)
  * PWM频率=CK_PSC/(PSC+1)/(ARR+1)
  * PWM占空比(高电平所占比例)=CCR/(ARR+1)
  * PWM分辨率(调节精度)=1/(ARR+1)
  * 频率1kHz 占空比50% 分辨率1%
- * 72M/(PSC+1)/(ARR+1)=1000 --> PSC=720
+ * 72M/(PSC+1)/(ARR+1)=1000 --> PSC+1=720
  * CCR/(ARR+1)=50% --> CCR=50
  * 1/(ARR+1)=1% --> ARR+1=100
  * @param TIM_Prescaler 预分频器(PSC)的值
@@ -121,4 +121,124 @@ void PWM_Init_PA15(uint16_t TIM_Prescaler, uint16_t TIM_Period, uint16_t TIM_Pul
   // GPIO_Remap_SWJ_JTAGDisable解除JTAG调试(PA15、PB3、PB4)
   // GPIO_Remap_SWJ_Disable解除SWD和JTAG调试(PA13、PA14、PA15、PB3、PB4) 谨慎使用，否则STLINK无法下载重新
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
+}
+
+/**
+ * @brief  初始化PWM在PA1口(定时器2通道2)
+ * PWM频率=CK_PSC/(PSC+1)/(ARR+1)
+ * PWM占空比(高电平所占比例)=CCR/(ARR+1)
+ * PWM分辨率(调节精度)=1/(ARR+1)
+ * 频率1kHz 占空比50% 分辨率1%
+ * 72M/(PSC+1)/(ARR+1)=1000 --> PSC+1=720
+ * CCR/(ARR+1)=50% --> CCR=50
+ * 1/(ARR+1)=1% --> ARR+1=100
+ * @param TIM_Prescaler 预分频器(PSC)的值
+ * @param TIM_Period 自动重装器(ARR)的值
+ * @param TIM_Pulse 脉冲(CCR寄存器值)
+ */
+void PWM_Init_PA1(uint16_t TIM_Prescaler, uint16_t TIM_Period, uint16_t TIM_Pulse)
+{
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+  TIM_InternalClockConfig(TIM2);
+  TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
+  TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseInitStructure.TIM_Prescaler = TIM_Prescaler;
+  TIM_TimeBaseInitStructure.TIM_Period = TIM_Period;
+  TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
+  TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStructure);
+  TIM_Cmd(TIM2, ENABLE);
+  TIM_OCInitTypeDef TIM_OCInitStructure;
+  TIM_OCStructInit(&TIM_OCInitStructure);
+  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+  TIM_OCInitStructure.TIM_Pulse = TIM_Pulse;
+  TIM_OC2Init(TIM2, &TIM_OCInitStructure);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+}
+
+/**
+ * @brief  初始化PWM在PA2口(定时器2通道3)
+ * PWM频率=CK_PSC/(PSC+1)/(ARR+1)
+ * PWM占空比(高电平所占比例)=CCR/(ARR+1)
+ * PWM分辨率(调节精度)=1/(ARR+1)
+ * 频率1kHz 占空比50% 分辨率1%
+ * 72M/(PSC+1)/(ARR+1)=1000 --> PSC+1=720
+ * CCR/(ARR+1)=50% --> CCR=50
+ * 1/(ARR+1)=1% --> ARR+1=100
+ * @param TIM_Prescaler 预分频器(PSC)的值
+ * @param TIM_Period 自动重装器(ARR)的值
+ * @param TIM_Pulse 脉冲(CCR寄存器值)
+ */
+void PWM_Init_PA2(uint16_t TIM_Prescaler, uint16_t TIM_Period, uint16_t TIM_Pulse)
+{
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+  TIM_InternalClockConfig(TIM2);
+  TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
+  TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseInitStructure.TIM_Prescaler = TIM_Prescaler;
+  TIM_TimeBaseInitStructure.TIM_Period = TIM_Period;
+  TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
+  TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStructure);
+  TIM_Cmd(TIM2, ENABLE);
+  TIM_OCInitTypeDef TIM_OCInitStructure;
+  TIM_OCStructInit(&TIM_OCInitStructure);
+  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+  TIM_OCInitStructure.TIM_Pulse = TIM_Pulse;
+  TIM_OC3Init(TIM2, &TIM_OCInitStructure);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+}
+
+/**
+ * @brief  初始化PWM在PA3口(定时器2通道4)
+ * PWM频率=CK_PSC/(PSC+1)/(ARR+1)
+ * PWM占空比(高电平所占比例)=CCR/(ARR+1)
+ * PWM分辨率(调节精度)=1/(ARR+1)
+ * 频率1kHz 占空比50% 分辨率1%
+ * 72M/(PSC+1)/(ARR+1)=1000 --> PSC+1=720
+ * CCR/(ARR+1)=50% --> CCR=50
+ * 1/(ARR+1)=1% --> ARR+1=100
+ * @param TIM_Prescaler 预分频器(PSC)的值
+ * @param TIM_Period 自动重装器(ARR)的值
+ * @param TIM_Pulse 脉冲(CCR寄存器值)
+ */
+void PWM_Init_PA3(uint16_t TIM_Prescaler, uint16_t TIM_Period, uint16_t TIM_Pulse)
+{
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+  TIM_InternalClockConfig(TIM2);
+  TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
+  TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseInitStructure.TIM_Prescaler = TIM_Prescaler;
+  TIM_TimeBaseInitStructure.TIM_Period = TIM_Period;
+  TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
+  TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStructure);
+  TIM_Cmd(TIM2, ENABLE);
+  TIM_OCInitTypeDef TIM_OCInitStructure;
+  TIM_OCStructInit(&TIM_OCInitStructure);
+  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+  TIM_OCInitStructure.TIM_Pulse = TIM_Pulse;
+  TIM_OC4Init(TIM2, &TIM_OCInitStructure);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
 }

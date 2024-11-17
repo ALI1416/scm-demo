@@ -1,8 +1,6 @@
 #ifndef __TIMER2_H
 #define __TIMER2_H
 
-#include "stm32f10x.h"
-
 /**
  * @brief  初始化定时器2(内部时钟)
  * CK_CNT_OV=CK_CNT/(ARR+1)=CK_PSC/(PSC+1)/(ARR+1)
