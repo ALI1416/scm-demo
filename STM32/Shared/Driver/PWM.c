@@ -17,7 +17,7 @@ void PWM_Init_PA0(uint16_t TIM_Prescaler, uint16_t TIM_Period, uint16_t TIM_Puls
 {
   // 初始化TIM2
   // 在stm32f10x_tim文件里
-  // TIM_OC1Init配置输出比较(Output Compare)通道
+  // TIM_OC1Init初始化输出比较(Output Compare)通道
   // TIM_OCStructInit给输出比较模块结构体默认值
   // TIM_CtrlPWMOutputs高级定时器PWM输出使能
   // TIM_ForcedOC1Config配置强制输出模式
