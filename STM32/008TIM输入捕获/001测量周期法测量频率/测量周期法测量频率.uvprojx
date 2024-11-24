@@ -690,6 +690,16 @@
               <FileType>5</FileType>
               <FilePath>..\..\Shared\Driver\PWM.h</FilePath>
             </File>
+            <File>
+              <FileName>IC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Shared\Driver\IC.c</FilePath>
+            </File>
+            <File>
+              <FileName>IC.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Shared\Driver\IC.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
