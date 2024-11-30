@@ -20,7 +20,7 @@ int main()
   // EXTI和NVIC不需要手动开启时钟
   InfraredSensor_Init_EXTI(EXTI_Line12, EXTI_Trigger_Falling);
   // 4、配置NVIC(优先级)
-  // 使用的EXTI_Line12位于EXTI15_10_IRQn中
+  // 使用的 EXTI_Line12 位于 EXTI15_10_IRQn 中
   InfraredSensor_Init_NVIC(EXTI15_10_IRQn, NVIC_PriorityGroup_2, 1, 1);
   while (1)
   {
@@ -29,7 +29,7 @@ int main()
 }
 
 // 5、执行中断程序
-// 在startup_stm32f10x_md文件中存在EXTI15_10_IRQHandler中断函数
+// 在startup_stm32f10x_md文件中存在 EXTI15_10_IRQHandler 中断函数
 void EXTI15_10_IRQHandler(void)
 {
   // 判断是否为指定中断线进来的中断

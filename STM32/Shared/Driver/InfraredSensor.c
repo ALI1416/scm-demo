@@ -48,20 +48,27 @@ void InfraredSensor_Init_AFIO(uint32_t RCC_APB2Periph, uint8_t GPIO_PortSource, 
 void InfraredSensor_Init_EXTI(uint32_t EXTI_Line, EXTITrigger_TypeDef EXTI_Trigger)
 {
   // 位于stm32f10x_exti文件里
-  // EXTI_DeInit复位EXTI配置
-  // EXTI_Init初始化EXTI
-  // EXTI_StructInit给EXTI结构体默认值
-  // EXTI_GenerateSWInterrupt软件触发外部中断
-  // EXTI_GetFlagStatus和EXTI_GetITStatus(中断函数内部使用)获取标志位是否被置SET
-  // EXTI_ClearFlag和EXTI_ClearITPendingBit(中断函数内部使用)对置SET的标志位进行清除
+  // EXTI_DeInit 复位EXTI配置
+  // EXTI_Init 初始化EXTI
+  // EXTI_StructInit 给EXTI结构体默认值
+  // EXTI_GenerateSWInterrupt 软件触发外部中断
+  // EXTI_GetFlagStatus 和 EXTI_GetITStatus (中断函数内部使用) 获取标志位是否被置SET
+  // EXTI_ClearFlag 和 EXTI_ClearITPendingBit (中断函数内部使用) 对置SET的标志位进行清除
   EXTI_InitTypeDef EXTI_InitInitStructure;
   // 中断线
   EXTI_InitInitStructure.EXTI_Line = EXTI_Line;
-  // 状态：ENABLE开启、DISABLE关闭
+  // 状态
+  // ENABLE 开启
+  // DISABLE 关闭
   EXTI_InitInitStructure.EXTI_LineCmd = ENABLE;
-  // 模式：EXTI_Mode_Interrupt中断模式、EXTI_Mode_Event事件模式
+  // 模式
+  // EXTI_Mode_Interrupt 中断模式
+  // EXTI_Mode_Event 事件模式
   EXTI_InitInitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  // 触发信号的有效边沿：EXTI_Trigger_Rising上升沿、EXTI_Trigger_Falling下降沿、EXTI_Trigger_Rising_Falling双边沿
+  // 触发信号的有效边沿
+  // EXTI_Trigger_Rising 上升沿
+  // EXTI_Trigger_Falling 下降沿
+  // EXTI_Trigger_Rising_Falling 双边沿
   EXTI_InitInitStructure.EXTI_Trigger = EXTI_Trigger;
   EXTI_Init(&EXTI_InitInitStructure);
 }
@@ -77,16 +84,18 @@ void InfraredSensor_Init_EXTI(uint32_t EXTI_Line, EXTITrigger_TypeDef EXTI_Trigg
 void InfraredSensor_Init_NVIC(uint8_t NVIC_IRQChannel, uint32_t NVIC_PriorityGroup, uint8_t NVIC_IRQChannelPreemptionPriority, uint8_t NVIC_IRQChannelSubPriority)
 {
   // 位于misc文件里
-  // NVIC_PriorityGroupConfig中断分组配置(芯片只能用一种、代码只执行一次就可以)
-  // NVIC_Init初始化NVIC
-  // NVIC_SetVectorTable设置中断向量表
-  // NVIC_SystemLPConfig系统低功耗配置
+  // NVIC_PriorityGroupConfig 中断分组配置(芯片只能用一种、代码只执行一次就可以)
+  // NVIC_Init 初始化NVIC
+  // NVIC_SetVectorTable 设置中断向量表
+  // NVIC_SystemLPConfig 系统低功耗配置
   // pre-emption priority先占(抢占)优先级、subpriority从占(响应)优先级
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup);
   NVIC_InitTypeDef NVIC_InitStructure;
   // 通道选择stm32f10x文件查找IRQn_Type类型，本芯片使用的是STM32F10X_MD中等密度
   NVIC_InitStructure.NVIC_IRQChannel = NVIC_IRQChannel;
-  // 状态：ENABLE开启、DISABLE关闭
+  // 状态
+  // ENABLE 开启
+  // DISABLE 关闭
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   // 抢占优先级
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = NVIC_IRQChannelPreemptionPriority;
@@ -96,7 +105,7 @@ void InfraredSensor_Init_NVIC(uint8_t NVIC_IRQChannel, uint32_t NVIC_PriorityGro
 }
 
 // 执行中断程序
-// 接B12在startup_stm32f10x_md文件中存在EXTI15_10_IRQHandler中断函数
+// 接B12在startup_stm32f10x_md文件中存在 EXTI15_10_IRQHandler 中断函数
 // void EXTI15_10_IRQHandler(void)
 // {
 //   // 判断是否为指定中断线进来的中断

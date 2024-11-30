@@ -22,7 +22,7 @@ int main()
 }
 
 // 执行中断程序
-// 在startup_stm32f10x_md文件中存在TIM2_IRQHandler中断函数
+// 在startup_stm32f10x_md文件中存在 TIM2_IRQHandler 中断函数
 void TIM2_IRQHandler(void)
 {
   // 判断是否为指定中断线进来的中断

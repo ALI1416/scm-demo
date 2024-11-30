@@ -18,14 +18,14 @@ void IC_Init_PA6(void)
   TIM_TimeBaseInit(TIM3, &TIM_TimeBaseInitStructure);
   // 初始化TIM3
   // 在stm32f10x_tim文件里
-  // TIM_ICInit初始化输入比较(Input Compare)
-  // TIM_PWMIConfig配置输入比较PWMI配置
-  // TIM_ICStructInit给输入比较模块结构体默认值
-  // TIM_SelectInputTrigger选择输入触发源(TRGI)
-  // TIM_SelectOutputTrigger选择输出触发源(TRGO)
-  // TIM_SelectSlaveMode选择从模式
-  // TIM_SetIC1Prescaler配置分频器
-  // TIM_GetCapture1获取CCR寄存器值(和TIM_SetCompare1对应)
+  // TIM_ICInit 初始化输入比较(Input Compare)
+  // TIM_PWMIConfig 配置输入比较PWMI配置
+  // TIM_ICStructInit 给输入比较模块结构体默认值
+  // TIM_SelectInputTrigger 选择输入触发源(TRGI)
+  // TIM_SelectOutputTrigger 选择输出触发源(TRGO)
+  // TIM_SelectSlaveMode 选择从模式
+  // TIM_SetIC1Prescaler 配置分频器
+  // TIM_GetCapture1 获取CCR寄存器值(和TIM_SetCompare1对应)
   TIM_ICInitTypeDef TIM_ICInitStructure;
   // 通道
   // TIM_Channel_1 通道1
@@ -36,19 +36,19 @@ void IC_Init_PA6(void)
   // 滤波器0x0~0xF
   TIM_ICInitStructure.TIM_ICFilter = 0xF;
   // 极性
-  // TIM_ICPolarity_Rising上升沿
-  // TIM_ICPolarity_Falling下降沿
-  // TIM_ICPolarity_BothEdge双边沿
+  // TIM_ICPolarity_Rising 上升沿
+  // TIM_ICPolarity_Falling 下降沿
+  // TIM_ICPolarity_BothEdge 双边沿
   TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
   // 分频器
-  // TIM_ICPSC_DIV1不分频
+  // TIM_ICPSC_DIV1 不分频
   // TIM_ICPSC_DIV2 2分频
   // TIM_ICPSC_DIV4 4分频
   // TIM_ICPSC_DIV8 8分频
   TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
   // 数据选择器
-  // TIM_ICSelection_DirectTI直连通道
-  // TIM_ICSelection_IndirectTI交叉通道
+  // TIM_ICSelection_DirectTI 直连通道
+  // TIM_ICSelection_IndirectTI 交叉通道
   // TIM_ICSelection_TRC TRC引脚
   TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
   TIM_ICInit(TIM3, &TIM_ICInitStructure);
@@ -57,6 +57,7 @@ void IC_Init_PA6(void)
   // 选择从模式 复位CNT
   TIM_SelectSlaveMode(TIM3, TIM_SlaveMode_Reset);
   TIM_Cmd(TIM3, ENABLE);
+  // 初始化PA6
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
   // 要使用上拉输入模式
@@ -104,6 +105,7 @@ void IC_PWMI_Init_PA6(void)
   TIM_SelectInputTrigger(TIM3, TIM_TS_TI1FP1);
   TIM_SelectSlaveMode(TIM3, TIM_SlaveMode_Reset);
   TIM_Cmd(TIM3, ENABLE);
+  // 初始化PA6
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;

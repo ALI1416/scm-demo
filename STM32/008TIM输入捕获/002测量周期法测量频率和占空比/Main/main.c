@@ -17,8 +17,8 @@ int main()
   IC_PWMI_Init_PA6();
   // 配置预分频配置
   // TIM_PSCReloadMode 预分频器重装模式
-  // TIM_PSCReloadMode_Update更新事件重装(下一个波形生效)
-  // TIM_PSCReloadMode_Immediate立即重装(可能会切断波形)
+  // TIM_PSCReloadMode_Update 更新事件重装(下一个波形生效)
+  // TIM_PSCReloadMode_Immediate 立即重装(可能会切断波形)
   // 修改为10kHz 50%占空比
   // TIM_PrescalerConfig(TIM2, 72 - 1, TIM_PSCReloadMode_Immediate);
   // TIM_SetCompare1(TIM2, 50);
