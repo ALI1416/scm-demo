@@ -3,7 +3,7 @@
 #include "Timer2.h"
 #include "Encoder.h"
 
-int32_t speed = 0;
+int16_t speed = 0;
 
 /**
  * 旋转编码器测速
@@ -18,7 +18,7 @@ int main()
   while (1)
   {
     // 获取值
-    // OLED_ShowFixedSignedNumber(0, 0, TIM_GetCounter(TIM3), 6);
+    // OLED_ShowFixedSignedNumber(0, 0, (int16_t)TIM_GetCounter(TIM3), 6);
     // 获取速度
     OLED_ShowFixedSignedNumber(0, 0, speed, 6);
   }
@@ -33,7 +33,7 @@ void TIM2_IRQHandler(void)
     // 获取值
     speed = TIM_GetCounter(TIM3);
     // 清空值
-    TIM_SetCounter(0);
+    TIM_SetCounter(TIM3, 0);
     // 清除中断标志位
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
   }

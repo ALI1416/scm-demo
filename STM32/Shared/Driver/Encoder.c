@@ -15,7 +15,7 @@ void Encoder_Init_PA6_PA7(void)
   // 自动重装器(ARR)的值设置为最大 防止计数溢出
   TIM_TimeBaseInitStructure.TIM_Period = 65535;
   TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
-  TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStructure);
+  TIM_TimeBaseInit(TIM3, &TIM_TimeBaseInitStructure);
   // 初始化TIM3
   // 在stm32f10x_tim文件里
   // TIM_EncoderInterfaceConfig 配置编码器接口
