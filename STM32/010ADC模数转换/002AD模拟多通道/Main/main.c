@@ -7,7 +7,7 @@ uint16_t AD_Init_ADC1_GetValue(uint8_t ADC_Channel);
 
 /**
  * AD模拟多通道
- * 接PA0口
+ * 接PA0 PA1 PA2 PA3口
  */
 int main()
 {
@@ -15,6 +15,7 @@ int main()
   AD_Init_ADC1();
   while (1)
   {
+    // 手动切换通道
     OLED_ShowFixedNumber(0, 0, AD_Init_ADC1_GetValue(ADC_Channel_0), 5);
     OLED_ShowFixedNumber(1, 0, AD_Init_ADC1_GetValue(ADC_Channel_1), 5);
     OLED_ShowFixedNumber(2, 0, AD_Init_ADC1_GetValue(ADC_Channel_2), 5);
