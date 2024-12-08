@@ -680,16 +680,6 @@
               <FileType>5</FileType>
               <FilePath>..\..\Shared\Driver\OLED.h</FilePath>
             </File>
-            <File>
-              <FileName>AD.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Shared\Driver\AD.c</FilePath>
-            </File>
-            <File>
-              <FileName>AD.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Shared\Driver\AD.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>

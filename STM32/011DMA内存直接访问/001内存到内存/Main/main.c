@@ -12,7 +12,7 @@ uint8_t DataB[] = {0, 0, 0, 0};
 int main()
 {
   OLED_Init(RCC_APB2Periph_GPIOB, GPIOB, GPIO_Pin_11, GPIOB, GPIO_Pin_10);
-  DMA_Init_Software((unit32_t)DataA, (unit32_t)DataB, 4);
+  DMA_Init_Software((uint32_t)DataA, (uint32_t)DataB, 4);
   while (1)
   {
     OLED_ShowFixedNumber(0, 0, DataA[0], 2);

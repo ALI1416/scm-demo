@@ -1,5 +1,4 @@
 #include "stm32f10x.h"
-
 /**
  * @brief  初始化模数转换ADC1在PA0口(ADC1通道1)
  */
@@ -56,9 +55,7 @@ void AD_Init_ADC1_PA0(void)
   // 转换模式
   // ENABLE 连续模式
   // DISABLE 单次模式
-  // ADC_InitStructue.ADC_ContinuousConvMode = DISABLE;
-  // 切换为连续模式
-  ADC_InitStructue.ADC_ContinuousConvMode = ENABLE;
+  ADC_InitStructue.ADC_ContinuousConvMode = DISABLE;
   // 通道数量 1~16
   ADC_InitStructue.ADC_NbrOfChannel = 1;
   // 外部触发源
@@ -82,19 +79,17 @@ void AD_Init_ADC1_PA0(void)
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
-  // 切换为连续模式
-  ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
 
 /**
  * @brief  获取模数转换ADC1在PA0口(ADC1通道1)的值
  * @retval 值 0~4095
  */
-uint16_t AD_Init_ADC1_PA0_GetValue(void)
+uint16_t AD_ADC1_PA0_GetValue(void)
 {
   // 单次转换
   // 开始转换
-  // ADC_SoftwareStartConvCmd(ADC1,ENABLE);
+  ADC_SoftwareStartConvCmd(ADC1, ENABLE);
   // 获取转换状态 等待转换完成
   // 采样周期55.5 采样周期12.5 共68周期
   // ADCCLK为72MHz的6分频 即12MHz 每次转换约为5.6us
@@ -104,9 +99,53 @@ uint16_t AD_Init_ADC1_PA0_GetValue(void)
   // ADC_FLAG_JEOC 注入组转换完成标志位
   // ADC_FLAG_JSTRT 注入组开始转换标志位
   // ADC_FLAG_STRT 规则组开始转换标志位
-  // while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET)
-  //   ;
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET)
+    ;
   // 获取转换值
   // 读取值会自动清除EOC标志位 不需要手动清除
+  return ADC_GetConversionValue(ADC1);
+}
+
+/**
+ * @brief  初始化模数转换ADC1在PA0口(ADC1通道1)[连续模式]
+ */
+void AD_Init_Cycle_ADC1_PA0(void)
+{
+  RCC_ADCCLKConfig(RCC_PCLK2_Div6);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_55Cycles5);
+  ADC_InitTypeDef ADC_InitStructue;
+  ADC_InitStructue.ADC_Mode = ADC_Mode_Independent;
+  ADC_InitStructue.ADC_DataAlign = ADC_DataAlign_Right;
+  ADC_InitStructue.ADC_ScanConvMode = DISABLE;
+  // 连续模式
+  ADC_InitStructue.ADC_ContinuousConvMode = ENABLE;
+  ADC_InitStructue.ADC_NbrOfChannel = 1;
+  ADC_InitStructue.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
+  ADC_Init(ADC1, &ADC_InitStructue);
+  ADC_Cmd(ADC1, ENABLE);
+  ADC_ResetCalibration(ADC1);
+  while (ADC_GetResetCalibrationStatus(ADC1) == SET)
+    ;
+  ADC_StartCalibration(ADC1);
+  while (ADC_GetCalibrationStatus(ADC1) == SET)
+    ;
+  // 初始化PA0
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  // 连续模式
+  ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+}
+
+/**
+ * @brief  获取模数转换ADC1在PA0口(ADC1通道1)的值[连续模式]
+ * @retval 值 0~4095
+ */
+uint16_t AD_Cycle_ADC1_PA0_GetValue(void)
+{
   return ADC_GetConversionValue(ADC1);
 }

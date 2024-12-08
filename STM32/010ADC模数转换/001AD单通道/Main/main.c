@@ -9,14 +9,16 @@
 int main()
 {
   OLED_Init(RCC_APB2Periph_GPIOB, GPIOB, GPIO_Pin_11, GPIOB, GPIO_Pin_10);
-  AD_Init_ADC1_PA0();
+  // AD_Init_ADC1_PA0();
+  AD_Init_Cycle_ADC1_PA0();
   while (1)
   {
-    uint16_t value = AD_Init_ADC1_PA0_GetValue();
-    OLED_ShowFixedNumber(0, 0, value, 5);
+    // uint16_t value = AD_ADC1_PA0_GetValue();
+    uint16_t value = AD_Cycle_ADC1_PA0_GetValue();
+    OLED_ShowFixedNumber(0, 0, value, 4);
     // 数值波动过大，去除后4位
-    OLED_ShowFixedNumber(1, 0, value >> 4, 5);
+    OLED_ShowFixedNumber(1, 0, value >> 4, 4);
     // 电压3.3v，转换为mV
-    OLED_ShowFixedNumber(2, 0, value * 3300 / 4095, 5);
+    OLED_ShowFixedNumber(2, 0, value * 3300 / 4095, 4);
   }
 }

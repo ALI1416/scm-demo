@@ -3,7 +3,7 @@
 #include "Delay.h"
 
 void AD_Init_ADC1(void);
-uint16_t AD_Init_ADC1_GetValue(uint8_t ADC_Channel);
+uint16_t AD_GetValue(uint8_t ADC_Channel);
 
 /**
  * AD模拟多通道
@@ -16,10 +16,10 @@ int main()
   while (1)
   {
     // 手动切换通道
-    OLED_ShowFixedNumber(0, 0, AD_Init_ADC1_GetValue(ADC_Channel_0), 5);
-    OLED_ShowFixedNumber(1, 0, AD_Init_ADC1_GetValue(ADC_Channel_1), 5);
-    OLED_ShowFixedNumber(2, 0, AD_Init_ADC1_GetValue(ADC_Channel_2), 5);
-    OLED_ShowFixedNumber(3, 0, AD_Init_ADC1_GetValue(ADC_Channel_3), 5);
+    OLED_ShowFixedNumber(0, 0, AD_GetValue(ADC_Channel_0), 4);
+    OLED_ShowFixedNumber(1, 0, AD_GetValue(ADC_Channel_1), 4);
+    OLED_ShowFixedNumber(2, 0, AD_GetValue(ADC_Channel_2), 4);
+    OLED_ShowFixedNumber(3, 0, AD_GetValue(ADC_Channel_3), 4);
     Delay_ms(100);
   }
 }
@@ -61,7 +61,7 @@ void AD_Init_ADC1(void)
  * @param ADC_Channel 通道
  * @retval 值 0~4095
  */
-uint16_t AD_Init_ADC1_GetValue(uint8_t ADC_Channel)
+uint16_t AD_GetValue(uint8_t ADC_Channel)
 {
   // 规则配置
   ADC_RegularChannelConfig(ADC1, ADC_Channel, 1, ADC_SampleTime_55Cycles5);

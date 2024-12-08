@@ -660,6 +660,16 @@
               <FileType>5</FileType>
               <FilePath>..\..\Shared\System\Delay.h</FilePath>
             </File>
+            <File>
+              <FileName>DMA.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Shared\System\DMA.c</FilePath>
+            </File>
+            <File>
+              <FileName>DMA.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Shared\System\DMA.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -679,16 +689,6 @@
               <FileName>OLED.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Shared\Driver\OLED.h</FilePath>
-            </File>
-            <File>
-              <FileName>AD.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Shared\Driver\AD.c</FilePath>
-            </File>
-            <File>
-              <FileName>AD.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Shared\Driver\AD.h</FilePath>
             </File>
           </Files>
         </Group>
