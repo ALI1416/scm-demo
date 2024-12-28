@@ -170,23 +170,23 @@ void USART1_IT_Init(void)
 /**
  * 接收到的数据
  */
-uint8_t Serial_RxData;
+uint8_t USART1_IT_RxData;
 /**
  * 接收到数据标志位
  */
-uint8_t Serial_RxFlag;
+uint8_t USART1_IT_RxFlag;
 
 // 执行中断程序
 // 在startup_stm32f10x_md文件中存在 USART1_IRQHandler 中断函数
-// void USART1_IRQHandler(void)
-// {
-//   // 数据接收寄存器非空标志位
-//   if (USART_GetITStatus(USART1, USART_IT_RXNE) == SET)
-//   {
-//     Serial_RxData = USART_ReceiveData(USART1);
-//     Serial_RxFlag = 1;
-//   }
-// }
+void USART1_IRQHandler(void)
+{
+  // 数据接收寄存器非空标志位
+  if (USART_GetITStatus(USART1, USART_IT_RXNE) == SET)
+  {
+    USART1_IT_RxData = USART_ReceiveData(USART1);
+    USART1_IT_RxFlag = 1;
+  }
+}
 
 /**
  * @brief  获取收到数据标志位(获取后自动清除)
@@ -194,11 +194,11 @@ uint8_t Serial_RxFlag;
  * 0 没有标记
  * 1 有标记
  */
-uint8_t Serial_RxFlag_Get(void)
+uint8_t USART1_IT_RxFlag_Get(void)
 {
-  if (Serial_RxFlag == 1)
+  if (USART1_IT_RxFlag == 1)
   {
-    Serial_RxFlag = 0;
+    USART1_IT_RxFlag = 0;
     return 1;
   }
   return 0;
@@ -208,7 +208,7 @@ uint8_t Serial_RxFlag_Get(void)
  * @brief  获取收到数据
  * @retval 收到数据
  */
-uint8_t Serial_RxData_Get(void)
+uint8_t USART1_IT_RxData_Get(void)
 {
-  return Serial_RxData;
+  return USART1_IT_RxData;
 }

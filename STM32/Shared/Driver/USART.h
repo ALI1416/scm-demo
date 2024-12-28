@@ -26,17 +26,20 @@ void USART1_SendString(char *String);
  */
 void USART1_Init(void);
 /**
+ * @brief  初始化USART1(启用中断)
+ */
+void USART1_IT_Init(void);
+/**
  * @brief  获取收到数据标志位(获取后自动清除)
  * @retval
  * 0 没有标记
  * 1 有标记
  */
-uint8_t Serial_RxFlag_Get(void);
+uint8_t USART1_IT_RxFlag_Get(void);
 /**
  * @brief  获取收到数据
  * @retval 收到数据
  */
-uint8_t Serial_RxData_Get(void);
-
+uint8_t USART1_IT_RxData_Get(void);
 
 #endif
